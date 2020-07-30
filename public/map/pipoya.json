@@ -66,7 +66,7 @@
          "opacity":1,
          "properties":[
                 {
-                 "name":"collision",
+                 "name":"collide",
                  "type":"bool",
                  "value":true
                 }],
@@ -94,12 +94,6 @@
          "id":7,
          "name":"building",
          "opacity":1,
-         "properties":[
-                {
-                 "name":"collision",
-                 "type":"bool",
-                 "value":true
-                }],
          "type":"tilelayer",
          "visible":true,
          "width":60,
@@ -173,6 +167,79 @@
          "spacing":0,
          "tilecount":1064,
          "tileheight":32,
+         "tiles":[
+                {
+                 "id":16,
+                 "properties":[
+                        {
+                         "name":"collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":17,
+                 "properties":[
+                        {
+                         "name":"collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":268,
+                 "properties":[
+                        {
+                         "name":"bridge",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":272,
+                 "properties":[
+                        {
+                         "name":"bridge",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":273,
+                 "properties":[
+                        {
+                         "name":"bridge",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":274,
+                 "properties":[
+                        {
+                         "name":"bridge",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":276,
+                 "properties":[
+                        {
+                         "name":"bridge",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":284,
+                 "properties":[
+                        {
+                         "name":"bridge",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }],
          "tilewidth":32
         }, 
         {

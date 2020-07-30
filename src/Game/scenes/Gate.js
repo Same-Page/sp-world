@@ -4,6 +4,7 @@ import EasyStar from "easystarjs"
 const TILE_WIDTH = 32
 
 const checkMapLayerProperty = (layer, name, val) => {
+	// console.log(layer.name)
 	let res = false
 	layer.properties.forEach((p) => {
 		if (p.name === name && p.value === val) {
@@ -16,34 +17,42 @@ const checkMapLayerProperty = (layer, name, val) => {
 const setupEasyStar = (map) => {
 	const easyStar = new EasyStar.js()
 	const collisionArray = []
-	for (var y = 0; y < map.height; y++) {
-		var col = []
-		for (var x = 0; x < map.width; x++) {
-			var collide = false
+	for (let y = 0; y < map.height; y++) {
+		const row = []
 
+		for (let x = 0; x < map.width; x++) {
+			let collide = false
+			let bridge = false
 			map.layers.forEach((l) => {
-				if (checkMapLayerProperty(l, "collision", true)) {
-					const hasTile = l.data[y][x].index != -1
-					// var tile = map.getTile(x, y, l)
-					if (hasTile) {
+				map.setLayer(l.name)
+				const tile = map.getTileAt(x, y)
+
+				if (tile) {
+					if (checkMapLayerProperty(l, "collide", true)) {
+						collide = true
+						// console.log(l.name)
+						// console.log(x, y)
+					}
+					if (tile.properties.bridge) {
+						bridge = true
+					}
+					if (tile.properties.collide) {
 						collide = true
 					}
 				}
-				if (l.name === "bridge") {
-					const hasTile = l.data[y][x].index != -1
-					if (hasTile) {
-						collide = false
-					}
-				}
 			})
-			col.push(+collide) // "+" to convert boolean to int
+			if (bridge) {
+				collide = false
+			}
+			row.push(+collide) // "+" to convert boolean to int
 		}
-		collisionArray.push(col)
+		collisionArray.push(row)
 	}
 	easyStar.setGrid(collisionArray)
 	easyStar.setAcceptableTiles([0])
 	return easyStar
 }
+
 const p2t = (p) => {
 	const t = Math.floor(p / TILE_WIDTH)
 	return t
