@@ -8,7 +8,6 @@ function Game() {
 		console.log("init game")
 
 		const game = new Phaser.Game({
-			// https://github.com/sporadic-labs/tile-extruder
 			type: Phaser.AUTO,
 			// type: Phaser.CANVAS,
 			width: 800,

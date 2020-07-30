@@ -27,7 +27,12 @@ const setupEasyStar = (map) => {
 					// var tile = map.getTile(x, y, l)
 					if (hasTile) {
 						collide = true
-						// break
+					}
+				}
+				if (l.name === "bridge") {
+					const hasTile = l.data[y][x].index != -1
+					if (hasTile) {
+						collide = false
 					}
 				}
 			})
@@ -59,7 +64,9 @@ export default class GateScene extends Phaser.Scene {
 		this.add.text(200, 100, "hi there")
 		const map = this.make.tilemap({ key: "map" })
 		// 1st param is tileset name in map.json, 2nd is image key in cache
-		// const grassTileset = map.addTilesetImage("Grass tileset", "grass")
+
+		// extruded tile, need to set margin and spacing
+		// https://github.com/sporadic-labs/tile-extruder
 		const baseTileset = map.addTilesetImage(
 			"[Base]BaseChip_pipo",
 			"base",
@@ -86,11 +93,6 @@ export default class GateScene extends Phaser.Scene {
 		map.layers.forEach((l) => {
 			map.createStaticLayer(l.name, tilesets)
 		})
-		// map.createStaticLayer("Paths", grassTileset)
-
-		// map.createStaticLayer("Grass Normal", grassTileset)
-		// map.createStaticLayer("Grass Dark", grassTileset)
-		// map.createStaticLayer("Grass Bright", grassTileset)
 
 		const user = this.add.sprite(50, 50, "cat")
 		user.setOrigin(0, 0)
@@ -116,6 +118,10 @@ export default class GateScene extends Phaser.Scene {
 			const targetY = p2t(pointer.worldY)
 			console.log(startX, startY, targetX, targetY)
 			easyStar.findPath(startX, startY, targetX, targetY, (path) => {
+				// destory previous timeline
+				if (user.timeline) {
+					user.timeline.destroy()
+				}
 				console.log(path)
 				if (path && path.length) {
 					const tweens = []
@@ -129,7 +135,7 @@ export default class GateScene extends Phaser.Scene {
 						})
 					}
 
-					this.tweens.timeline({
+					user.timeline = this.tweens.timeline({
 						tweens: tweens,
 					})
 
