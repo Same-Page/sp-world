@@ -50,7 +50,14 @@ export default class GateScene extends Phaser.Scene {
 		const map = this.make.tilemap({ key: "map" })
 		// 1st param is tileset name in map.json, 2nd is image key in cache
 		// const grassTileset = map.addTilesetImage("Grass tileset", "grass")
-		const baseTileset = map.addTilesetImage("[Base]BaseChip_pipo", "base")
+		const baseTileset = map.addTilesetImage(
+			"[Base]BaseChip_pipo",
+			"base",
+			32,
+			32,
+			1,
+			2
+		)
 		const waterfallTileset = map.addTilesetImage(
 			"[A]WaterFall_pipo",
 			"waterfall"
