@@ -1,0 +1,139 @@
+import Phaser from "phaser"
+import EasyStar from "easystarjs"
+
+const TILE_WIDTH = 32
+
+const setupEasyStar = (map) => {
+	const easyStar = new EasyStar.js()
+	const collisionArray = []
+	for (var y = 0; y < map.height; y++) {
+		var col = []
+		for (var x = 0; x < map.width; x++) {
+			var collide = false
+
+			// map.layers.forEach((l) => {
+			// 	if (l.properties.collision) {
+			// 		const hasTile = l.data[y][x].index != -1
+			// 		// var tile = map.getTile(x, y, l)
+			// 		if (hasTile) {
+			// 			collide = true
+			// 			// break
+			// 		}
+			// 	}
+			// })
+			col.push(+collide) // "+" to convert boolean to int
+		}
+		collisionArray.push(col)
+	}
+	easyStar.setGrid(collisionArray)
+	easyStar.setAcceptableTiles([0])
+	return easyStar
+}
+const p2t = (p) => {
+	const t = Math.ceil(p / TILE_WIDTH)
+	return t
+}
+export default class GateScene extends Phaser.Scene {
+	preload() {
+		this.load.image("cat", "img/cat.jpg")
+		// this.load.image("grass", "tilesets/grass.png")
+		this.load.image("base", "map/[Base]BaseChip_pipo.png")
+		this.load.image("waterfall", "map/[A]WaterFall_pipo.png")
+		this.load.image("grass", "map/[A]Grass_pipo.png")
+		this.load.image("water", "map/[A]Water_pipo.png")
+		this.load.image("flower", "map/[A]Flower_pipo.png")
+		// this.load.tilemapTiledJSON("map", "map/map.json")
+		this.load.tilemapTiledJSON("map", "map/pipoya.json")
+	}
+	create() {
+		this.add.text(200, 100, "hi there")
+		const map = this.make.tilemap({ key: "map" })
+		// 1st param is tileset name in map.json, 2nd is image key in cache
+		// const grassTileset = map.addTilesetImage("Grass tileset", "grass")
+		const baseTileset = map.addTilesetImage("[Base]BaseChip_pipo", "base")
+		const waterfallTileset = map.addTilesetImage(
+			"[A]WaterFall_pipo",
+			"waterfall"
+		)
+		const waterTileset = map.addTilesetImage("[A]Water_pipo", "water")
+		const grassTileset = map.addTilesetImage("[A]Grass_pipo", "grass")
+		const flowerTileset = map.addTilesetImage("[A]Flower_pipo", "flower")
+		const tilesets = [
+			baseTileset,
+			waterTileset,
+			waterfallTileset,
+			grassTileset,
+			flowerTileset,
+		]
+		// console.log(map)
+		map.layers.forEach((l) => {
+			map.createStaticLayer(l.name, tilesets)
+		})
+		// map.createStaticLayer("Paths", grassTileset)
+
+		// map.createStaticLayer("Grass Normal", grassTileset)
+		// map.createStaticLayer("Grass Dark", grassTileset)
+		// map.createStaticLayer("Grass Bright", grassTileset)
+
+		const user = this.add.sprite(50, 50, "cat")
+		user.y = 100
+		user.displayWidth = 32
+		user.displayHeight = 32
+		this.cameras.main.roundPixels = true
+		// this.cameras.main.setBackgroundColor("#ffffff")
+
+		this.cameras.main.startFollow(user)
+		// this.cameras.main.setBounds(0, 0, 9999, 9999)
+
+		const easyStar = setupEasyStar(map)
+		easyStar.enableDiagonals(true)
+
+		this.input.on("pointerdown", (pointer) => {
+			console.log(pointer)
+			// user.x = pointer.worldX
+			// user.y = pointer.worldY
+			const startX = p2t(user.x)
+			const startY = p2t(user.y)
+			const targetX = p2t(pointer.worldX)
+			const targetY = p2t(pointer.worldY)
+			console.log(startX, startY, targetX, targetY)
+			easyStar.findPath(startX, startY, targetX, targetY, (path) => {
+				console.log(path)
+				if (path && path.length) {
+					const tweens = []
+					for (var i = 0; i < path.length - 1; i++) {
+						var ex = path[i + 1].x
+						var ey = path[i + 1].y
+						tweens.push({
+							targets: user,
+							x: { value: ex * map.tileWidth, duration: 100 },
+							y: { value: ey * map.tileHeight, duration: 100 },
+						})
+					}
+
+					this.tweens.timeline({
+						tweens: tweens,
+					})
+
+					// var x_steps = []
+					// var y_steps = []
+					// for (var q = 0; q < path.length; q++) {
+					// 	// x_steps.push(path[q].x * Game.map.tileWidth - 16)
+					// 	// y_steps.push(path[q].y * Game.map.tileWidth - 32)
+					// 	x_steps.push(path[q].x * map.tileWidth)
+					// 	y_steps.push(path[q].y * map.tileWidth)
+					// }
+
+					// this.tweens.add({
+					// 	targets: user,
+					// 	x: x_steps,
+					// 	y: y_steps,
+					// 	duration: 1 * 1000,
+					// 	// ease: "Power1",
+					// })
+				}
+			})
+			easyStar.calculate()
+		})
+	}
+}
