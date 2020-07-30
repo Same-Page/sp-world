@@ -90,7 +90,7 @@ export default class GateScene extends Phaser.Scene {
 		// this.cameras.main.setBackgroundColor("#ffffff")
 
 		this.cameras.main.startFollow(user)
-		// this.cameras.main.setBounds(0, 0, 9999, 9999)
+		this.cameras.main.setBounds(0, 0, 9999, 9999)
 
 		const easyStar = setupEasyStar(map)
 		easyStar.enableDiagonals(true)
