@@ -3,6 +3,16 @@ import EasyStar from "easystarjs"
 
 const TILE_WIDTH = 32
 
+const checkMapLayerProperty = (layer, name, val) => {
+	let res = false
+	layer.properties.forEach((p) => {
+		if (p.name === name && p.value === val) {
+			res = true
+		}
+	})
+	return res
+}
+
 const setupEasyStar = (map) => {
 	const easyStar = new EasyStar.js()
 	const collisionArray = []
@@ -11,16 +21,16 @@ const setupEasyStar = (map) => {
 		for (var x = 0; x < map.width; x++) {
 			var collide = false
 
-			// map.layers.forEach((l) => {
-			// 	if (l.properties.collision) {
-			// 		const hasTile = l.data[y][x].index != -1
-			// 		// var tile = map.getTile(x, y, l)
-			// 		if (hasTile) {
-			// 			collide = true
-			// 			// break
-			// 		}
-			// 	}
-			// })
+			map.layers.forEach((l) => {
+				if (checkMapLayerProperty(l, "collision", true)) {
+					const hasTile = l.data[y][x].index != -1
+					// var tile = map.getTile(x, y, l)
+					if (hasTile) {
+						collide = true
+						// break
+					}
+				}
+			})
 			col.push(+collide) // "+" to convert boolean to int
 		}
 		collisionArray.push(col)
@@ -30,7 +40,7 @@ const setupEasyStar = (map) => {
 	return easyStar
 }
 const p2t = (p) => {
-	const t = Math.ceil(p / TILE_WIDTH)
+	const t = Math.floor(p / TILE_WIDTH)
 	return t
 }
 export default class GateScene extends Phaser.Scene {
@@ -72,7 +82,7 @@ export default class GateScene extends Phaser.Scene {
 			grassTileset,
 			flowerTileset,
 		]
-		// console.log(map)
+		console.log(map)
 		map.layers.forEach((l) => {
 			map.createStaticLayer(l.name, tilesets)
 		})
@@ -83,6 +93,7 @@ export default class GateScene extends Phaser.Scene {
 		// map.createStaticLayer("Grass Bright", grassTileset)
 
 		const user = this.add.sprite(50, 50, "cat")
+		user.setOrigin(0, 0)
 		user.y = 100
 		user.displayWidth = 32
 		user.displayHeight = 32
