@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import Phaser from "phaser"
+import CircleMaskImagePlugin from "phaser3-rex-plugins/plugins/circlemaskimage-plugin.js"
 
 import GateScene from "./scenes/Gate"
 
@@ -22,6 +23,16 @@ function Game() {
 			// 	// preload: preload,
 			// 	// create: create
 			// },
+			plugins: {
+				global: [
+					{
+						key: "rexCircleMaskImagePlugin",
+						plugin: CircleMaskImagePlugin,
+						start: true,
+					},
+					// ...
+				],
+			},
 		})
 		game.scene.add("gate", GateScene)
 		game.scene.start("gate")

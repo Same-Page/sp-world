@@ -59,14 +59,21 @@ const p2t = (p) => {
 }
 export default class GateScene extends Phaser.Scene {
 	preload() {
-		this.load.image("cat", "img/cat.jpg")
+		this.load.setCORS(true)
+		this.load.image(
+			"cat",
+			"https://avatars2.githubusercontent.com/u/164476?s=88&v=4"
+		)
+		// this.load.image(
+		// 	"cat",
+		// 	"https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/rectangle128x96.jpg"
+		// )
 		// this.load.image("grass", "tilesets/grass.png")
 		this.load.image("base", "map/[Base]BaseChip_pipo.png")
 		this.load.image("waterfall", "map/[A]WaterFall_pipo.png")
 		this.load.image("grass", "map/[A]Grass_pipo.png")
 		this.load.image("water", "map/[A]Water_pipo.png")
 		this.load.image("flower", "map/[A]Flower_pipo.png")
-		// this.load.tilemapTiledJSON("map", "map/map.json")
 		this.load.tilemapTiledJSON("map", "map/pipoya.json")
 	}
 	create() {
@@ -112,11 +119,15 @@ export default class GateScene extends Phaser.Scene {
 			}
 		})
 
-		const user = this.add.sprite(50, 50, "cat")
+		// const user = this.add.sprite(50, 50, "cat")
+		const user = this.add.rexCircleMaskImage(1500, 1000, "cat")
+
 		console.log(user)
-		user.setOrigin(0, 0)
-		user.y = 100
-		user.displayWidth = 32
+		// user.width = 32
+		// user.height = 32
+		user.setOrigin(0.1, 0)
+		// user.y = 100
+		user.displayWidth = 40
 		user.displayHeight = 32
 		this.cameras.main.roundPixels = true
 		// this.cameras.main.setBackgroundColor("#ffffff")
