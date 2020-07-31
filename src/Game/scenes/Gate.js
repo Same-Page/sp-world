@@ -50,6 +50,7 @@ const setupEasyStar = (map) => {
 	}
 	easyStar.setGrid(collisionArray)
 	easyStar.setAcceptableTiles([0])
+	map.collisionArray = collisionArray
 	return easyStar
 }
 
@@ -60,6 +61,9 @@ const p2t = (p) => {
 export default class GateScene extends Phaser.Scene {
 	preload() {
 		this.load.setCORS(true)
+		this.load.image("whiteSquare", "img/white_square.png")
+		this.load.image("redSquare", "img/red_square.png")
+
 		this.load.image(
 			"cat",
 			"https://avatars2.githubusercontent.com/u/164476?s=88&v=4"
@@ -74,11 +78,14 @@ export default class GateScene extends Phaser.Scene {
 		this.load.image("grass", "map/[A]Grass_pipo.png")
 		this.load.image("water", "map/[A]Water_pipo.png")
 		this.load.image("flower", "map/[A]Flower_pipo.png")
+
 		this.load.tilemapTiledJSON("map", "map/pipoya.json")
 	}
 	create() {
 		this.add.text(200, 100, "hi there")
 		const map = this.make.tilemap({ key: "map" })
+		this.map = map
+
 		// 1st param is tileset name in map.json, 2nd is image key in cache
 
 		// extruded tile, need to set margin and spacing
@@ -118,10 +125,21 @@ export default class GateScene extends Phaser.Scene {
 				mapLayer.depth = 1
 			}
 		})
+		this.whiteSquare = this.add.sprite(1500, 1000, "whiteSquare")
+		this.redSquare = this.add.sprite(1500, 1000, "redSquare")
+		this.whiteSquare.setOrigin(0, 0)
+		this.whiteSquare.setAlpha(0.5)
+		this.whiteSquare.depth = 9999
+		this.redSquare.setOrigin(0, 0)
+		this.redSquare.depth = 9999
+		this.redSquare.setAlpha(0.5)
 
+		this.input.setDefaultCursor("pointer")
 		// const user = this.add.sprite(50, 50, "cat")
 		const user = this.add.rexCircleMaskImage(1500, 1000, "cat")
-
+		user.setInteractive({
+			cursor: "pointer",
+		})
 		console.log(user)
 		// user.width = 32
 		// user.height = 32
@@ -137,7 +155,8 @@ export default class GateScene extends Phaser.Scene {
 
 		const easyStar = setupEasyStar(map)
 		easyStar.enableDiagonals(true)
-
+		// when camera moves activePointer is not updated
+		this.input.setPollAlways()
 		this.input.on("pointerdown", (pointer) => {
 			console.log(pointer)
 			// user.x = pointer.worldX
@@ -158,10 +177,22 @@ export default class GateScene extends Phaser.Scene {
 					for (var i = 0; i < path.length - 1; i++) {
 						var ex = path[i + 1].x
 						var ey = path[i + 1].y
+						// if walking diagonally, duration should be longer
+						// because distance is longer
+						let duration = 200
+						if (ex !== path[i].x && ey !== path[i].y) {
+							duration = 300
+						}
 						tweens.push({
 							targets: user,
-							x: { value: ex * map.tileWidth, duration: 100 },
-							y: { value: ey * map.tileHeight, duration: 100 },
+							x: {
+								value: ex * map.tileWidth,
+								duration: duration,
+							},
+							y: {
+								value: ey * map.tileHeight,
+								duration: duration,
+							},
 						})
 					}
 
@@ -189,5 +220,27 @@ export default class GateScene extends Phaser.Scene {
 			})
 			easyStar.calculate()
 		})
+	}
+
+	update() {
+		const tileX = p2t(this.input.activePointer.worldX)
+		const tileY = p2t(this.input.activePointer.worldY)
+
+		const collide = this.map.collisionArray[tileY][tileX]
+		const x = tileX * TILE_WIDTH
+		const y = tileY * TILE_WIDTH
+		if (collide) {
+			this.redSquare.x = x
+			this.redSquare.y = y
+			this.redSquare.setVisible(true)
+			this.whiteSquare.setVisible(false)
+		} else {
+			this.whiteSquare.x = x
+			this.whiteSquare.y = y
+			this.redSquare.setVisible(false)
+			this.whiteSquare.setVisible(true)
+		}
+		// console.log(collide)
+		// console.log(this.input.worldX)
 	}
 }

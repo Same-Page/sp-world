@@ -2025,12 +2025,12 @@
   </tile>
   <tile id="884">
    <properties>
-    <property name="c" type="bool" value="true"/>
+    <property name="c" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="885">
    <properties>
-    <property name="c" type="bool" value="true"/>
+    <property name="c" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="886">
