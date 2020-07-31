@@ -1398,6 +1398,176 @@
     <property name="c" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="672">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="673">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="674">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="675">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="676">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="677">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="678">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="679">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="680">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="681">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="682">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="683">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="684">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="685">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="686">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="687">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="688">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="689">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="690">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="691">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="692">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="693">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="694">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="695">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="698">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="699">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="700">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="701">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="702">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="703">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="708">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="709">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="710">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="711">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
   <tile id="716">
    <properties>
     <property name="c" type="bool" value="true"/>

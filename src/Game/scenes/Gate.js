@@ -151,7 +151,12 @@ export default class GateScene extends Phaser.Scene {
 		// this.cameras.main.setBackgroundColor("#ffffff")
 
 		this.cameras.main.startFollow(user)
-		this.cameras.main.setBounds(0, 0, 9999, 9999)
+		this.cameras.main.setBounds(
+			0,
+			0,
+			map.width * map.tileWidth,
+			map.height * map.tileHeight
+		)
 
 		const easyStar = setupEasyStar(map)
 		easyStar.enableDiagonals(true)
@@ -179,9 +184,9 @@ export default class GateScene extends Phaser.Scene {
 						var ey = path[i + 1].y
 						// if walking diagonally, duration should be longer
 						// because distance is longer
-						let duration = 200
+						let duration = 100
 						if (ex !== path[i].x && ey !== path[i].y) {
-							duration = 300
+							duration = 150
 						}
 						tweens.push({
 							targets: user,
