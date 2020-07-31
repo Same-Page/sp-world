@@ -36,7 +36,7 @@ const setupEasyStar = (map) => {
 					if (tile.properties.bridge) {
 						bridge = true
 					}
-					if (tile.properties.collide) {
+					if (tile.properties.c) {
 						collide = true
 					}
 				}
@@ -100,10 +100,16 @@ export default class GateScene extends Phaser.Scene {
 		]
 		console.log(map)
 		map.layers.forEach((l) => {
-			map.createStaticLayer(l.name, tilesets)
+			const mapLayer = map.createStaticLayer(l.name, tilesets)
+			if (["grass", "ground", "bridge", "water"].includes(l.name)) {
+				// console.log(mapLayer)
+			} else {
+				mapLayer.depth = 1
+			}
 		})
 
 		const user = this.add.sprite(50, 50, "cat")
+		console.log(user)
 		user.setOrigin(0, 0)
 		user.y = 100
 		user.displayWidth = 32
