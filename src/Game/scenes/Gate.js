@@ -73,9 +73,9 @@ export default class GateScene extends Phaser.Scene {
 		// 	"https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/rectangle128x96.jpg"
 		// )
 		// this.load.image("grass", "tilesets/grass.png")
-		this.load.image("base", "map/[Base]BaseChip_pipo.png")
+		this.load.image("base", "map/[Base]BaseChip_pipo_ex.png")
 		this.load.image("waterfall", "map/[A]WaterFall_pipo.png")
-		this.load.image("grass", "map/[A]Grass_pipo.png")
+		this.load.image("grass", "map/[A]Grass_pipo_ex.png")
 		this.load.image("water", "map/[A]Water_pipo.png")
 		this.load.image("flower", "map/[A]Flower_pipo.png")
 
@@ -103,7 +103,14 @@ export default class GateScene extends Phaser.Scene {
 			"waterfall"
 		)
 		const waterTileset = map.addTilesetImage("[A]Water_pipo", "water")
-		const grassTileset = map.addTilesetImage("[A]Grass_pipo", "grass")
+		const grassTileset = map.addTilesetImage(
+			"[A]Grass_pipo",
+			"grass",
+			32,
+			32,
+			1,
+			2
+		)
 		const flowerTileset = map.addTilesetImage("[A]Flower_pipo", "flower")
 		const tilesets = [
 			baseTileset,
