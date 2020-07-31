@@ -11,8 +11,8 @@ function Game() {
 		const game = new Phaser.Game({
 			type: Phaser.AUTO,
 			// type: Phaser.CANVAS,
-			width: 800,
-			height: 600,
+			width: window.innerWidth,
+			height: window.innerHeight,
 			// physics: {
 			// 	default: 'arcade',
 			// 	arcade: {
@@ -37,6 +37,9 @@ function Game() {
 		game.scene.add("gate", GateScene)
 		game.scene.start("gate")
 		window.game = game
+		window.addEventListener("resize", () => {
+			game.scale.resize(window.innerWidth, window.innerHeight)
+		})
 	}, [])
 	return <div id="game"></div>
 }

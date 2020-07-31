@@ -170,6 +170,10 @@ export default class GateScene extends Phaser.Scene {
 			const startY = p2t(user.y)
 			const targetX = p2t(pointer.worldX)
 			const targetY = p2t(pointer.worldY)
+			if (targetY >= map.height || targetX >= map.width) {
+				console.warn("out of bound")
+				return
+			}
 			console.log(startX, startY, targetX, targetY)
 			easyStar.findPath(startX, startY, targetX, targetY, (path) => {
 				// destory previous timeline
