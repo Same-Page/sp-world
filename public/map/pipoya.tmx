@@ -73,6 +73,16 @@
     <property name="c" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="59">
+   <properties>
+    <property name="bridge" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="63">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
   <tile id="64">
    <properties>
     <property name="c" type="bool" value="true"/>
@@ -99,6 +109,11 @@
    </properties>
   </tile>
   <tile id="69">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="71">
    <properties>
     <property name="c" type="bool" value="true"/>
    </properties>
@@ -473,6 +488,16 @@
     <property name="c" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="254">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="255">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
   <tile id="264">
    <properties>
     <property name="c" type="bool" value="true"/>
@@ -499,6 +524,16 @@
    </properties>
   </tile>
   <tile id="269">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="270">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="271">
    <properties>
     <property name="c" type="bool" value="true"/>
    </properties>
@@ -559,6 +594,16 @@
    </properties>
   </tile>
   <tile id="285">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="286">
+   <properties>
+    <property name="c" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="287">
    <properties>
     <property name="c" type="bool" value="true"/>
    </properties>

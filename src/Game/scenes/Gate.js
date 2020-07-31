@@ -101,7 +101,11 @@ export default class GateScene extends Phaser.Scene {
 		console.log(map)
 		map.layers.forEach((l) => {
 			const mapLayer = map.createStaticLayer(l.name, tilesets)
-			if (["grass", "ground", "bridge", "water"].includes(l.name)) {
+			if (
+				["grass", "ground", "bridge", "water", "water_grass"].includes(
+					l.name
+				)
+			) {
 				// console.log(mapLayer)
 			} else {
 				mapLayer.depth = 1
