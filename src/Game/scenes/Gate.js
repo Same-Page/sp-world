@@ -78,6 +78,7 @@ export default class GateScene extends Phaser.Scene {
 		this.load.image("grass", "map/[A]Grass_pipo_ex.png")
 		this.load.image("water", "map/[A]Water_pipo.png")
 		this.load.image("flower", "map/[A]Flower_pipo.png")
+		this.load.image("quest", "map/quest.png")
 
 		this.load.tilemapTiledJSON("map", "map/pipoya.json")
 	}
@@ -112,20 +113,27 @@ export default class GateScene extends Phaser.Scene {
 			2
 		)
 		const flowerTileset = map.addTilesetImage("[A]Flower_pipo", "flower")
+		const questTileset = map.addTilesetImage("quest", "quest")
 		const tilesets = [
 			baseTileset,
 			waterTileset,
 			waterfallTileset,
 			grassTileset,
 			flowerTileset,
+			questTileset,
 		]
 		console.log(map)
 		map.layers.forEach((l) => {
 			const mapLayer = map.createStaticLayer(l.name, tilesets)
 			if (
-				["grass", "ground", "bridge", "water", "water_grass"].includes(
-					l.name
-				)
+				[
+					"grass",
+					"ground",
+					"bridge",
+					"water",
+					"water_grass",
+					"farm_up",
+				].includes(l.name)
 			) {
 				// console.log(mapLayer)
 			} else {
@@ -143,7 +151,7 @@ export default class GateScene extends Phaser.Scene {
 
 		this.input.setDefaultCursor("pointer")
 		// const user = this.add.sprite(50, 50, "cat")
-		const user = this.add.rexCircleMaskImage(1500, 1000, "cat")
+		const user = this.add.rexCircleMaskImage(1800, 2700, "cat")
 		user.setInteractive({
 			cursor: "pointer",
 		})
