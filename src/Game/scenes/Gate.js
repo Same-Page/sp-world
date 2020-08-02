@@ -132,11 +132,15 @@ export default class GateScene extends Phaser.Scene {
 					"bridge",
 					"water",
 					"water_grass",
-					"farm_up",
+					"ground_up",
+					"terrain",
+					// "building",
 				].includes(l.name)
 			) {
+				// layers below user
 				// console.log(mapLayer)
 			} else {
+				// layers above user
 				mapLayer.depth = 1
 			}
 		})
