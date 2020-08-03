@@ -134,7 +134,7 @@ export default class GateScene extends Phaser.Scene {
 					"water_grass",
 					"ground_up",
 					"terrain",
-					// "building",
+					"building",
 				].includes(l.name)
 			) {
 				// layers below user
