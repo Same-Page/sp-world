@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react"
 import Phaser from "phaser"
 import CircleMaskImagePlugin from "phaser3-rex-plugins/plugins/circlemaskimage-plugin.js"
 
-import GateScene from "./scenes/Gate"
+import VillageScene from "./scenes/Village"
+import InnScene from "./scenes/Inn"
 window.isMobile = false //initiate as false
 // device detection
 /* eslint-disable no-useless-escape */
@@ -47,8 +48,10 @@ function Game() {
 				],
 			},
 		})
-		game.scene.add("gate", GateScene)
-		game.scene.start("gate")
+
+		game.scene.add("village", VillageScene)
+		game.scene.add("inn", InnScene)
+		game.scene.start("village")
 		window.game = game
 		window.addEventListener("resize", () => {
 			game.scale.resize(window.innerWidth, window.innerHeight)
