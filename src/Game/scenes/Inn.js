@@ -37,11 +37,13 @@ export default class InnScene extends BaseScene {
 			const mapLayer = map.createStaticLayer(l.name, tilesets)
 		})
 		super.postCreate()
+		this.user.x = 6 * 32
+		this.user.y = 47 * 32
 	}
 	checkPos() {
 		const tileX = this.p2t(this.user.x)
 		const tileY = this.p2t(this.user.y)
-		if (tileX === 10) {
+		if (tileX === 6 && tileY === 49) {
 			this.scene.start("village", { x: 81, y: 74 })
 			// this.leave()
 		}
