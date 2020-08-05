@@ -48,6 +48,6 @@ export default class InnScene extends BaseScene {
 	}
 	update() {
 		super.update()
-		console.log("inn")
+		// console.log("inn")
 	}
 }

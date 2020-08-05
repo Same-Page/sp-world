@@ -108,6 +108,6 @@ export default class VillageScene extends BaseScene {
 
 	update() {
 		super.update()
-		console.log("v")
+		// console.log("v")
 	}
 }
