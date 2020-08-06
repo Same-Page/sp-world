@@ -100,9 +100,14 @@ export default class VillageScene extends BaseScene {
 	checkPos() {
 		const tileX = this.p2t(this.user.x)
 		const tileY = this.p2t(this.user.y)
+		console.log(tileX, tileY)
 		if (tileX === 81 && tileY === 73) {
 			console.log("enter inn")
-			this.scene.start("inn")
+			this.scene.start("inn", {})
+		}
+		if (tileX === 88 && tileY === 70) {
+			console.log("enter inn from yard")
+			this.scene.start("inn", { entrance: "yard" })
 		}
 	}
 

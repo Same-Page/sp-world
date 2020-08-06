@@ -2,8 +2,9 @@ import Phaser from "phaser"
 import BaseScene from "./Base"
 
 export default class InnScene extends BaseScene {
-	init() {
-		this.left = false
+	init(data) {
+		console.log("inn init", data)
+		this.initData = data || {}
 	}
 	preload() {
 		super.preload()
@@ -11,15 +12,7 @@ export default class InnScene extends BaseScene {
 		this.load.image("inn", "tilesets/inn.png")
 		this.load.tilemapTiledJSON("inn", "map/inn.json")
 	}
-	leave() {
-		if (this.left) {
-			return
-		}
-		console.log(this)
-		this.scene.remove("inn")
-		this.scene.start("village")
-		this.left = true
-	}
+
 	create() {
 		// window.leave = this.leave
 		// window.leave.bind(this)
@@ -37,15 +30,22 @@ export default class InnScene extends BaseScene {
 			const mapLayer = map.createStaticLayer(l.name, tilesets)
 		})
 		super.postCreate()
-		this.user.x = 6 * 32
-		this.user.y = 47 * 32
+		if (this.initData.entrance === "yard") {
+			this.user.x = 30 * this.map.tileHeight
+			this.user.y = 28 * this.map.tileWidth
+		} else {
+			this.user.x = 6 * this.map.tileHeight
+			this.user.y = 48 * this.map.tileWidth
+		}
 	}
 	checkPos() {
 		const tileX = this.p2t(this.user.x)
 		const tileY = this.p2t(this.user.y)
-		if (tileX === 6 && tileY === 49) {
+		if (tileY === 49) {
 			this.scene.start("village", { x: 81, y: 74 })
-			// this.leave()
+		}
+		if (tileY === 29 && tileX === 30) {
+			this.scene.start("village", { x: 88, y: 71 })
 		}
 	}
 	update() {
