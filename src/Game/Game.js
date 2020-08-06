@@ -51,7 +51,7 @@ function Game() {
 
 		game.scene.add("village", VillageScene)
 		game.scene.add("inn", InnScene)
-		game.scene.start("village")
+		game.scene.start("inn")
 		window.game = game
 		window.addEventListener("resize", () => {
 			game.scale.resize(window.innerWidth, window.innerHeight)
