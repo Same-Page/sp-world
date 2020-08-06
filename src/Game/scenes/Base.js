@@ -97,7 +97,14 @@ export default class VillageScene extends Phaser.Scene {
 		user.displayHeight = 32
 		this.cameras.main.roundPixels = true
 
-		this.cameras.main.startFollow(user)
+		this.cameras.main.startFollow(
+			user,
+			false,
+			1,
+			1,
+			0,
+			window.isMobile ? Math.floor(window.innerHeight / 4) : 0
+		)
 
 		const map = this.map
 
