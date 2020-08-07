@@ -28,6 +28,9 @@ export default class InnScene extends BaseScene {
 		console.log(map)
 		map.layers.forEach((l) => {
 			const mapLayer = map.createStaticLayer(l.name, tilesets)
+			if (l.name === "wall") {
+				mapLayer.depth = 1
+			}
 		})
 		super.postCreate()
 		if (this.initData.entrance === "yard") {
@@ -44,7 +47,7 @@ export default class InnScene extends BaseScene {
 		if (tileY === 49) {
 			this.scene.start("village", { x: 81, y: 74 })
 		}
-		if (tileY === 29 && tileX === 30) {
+		if (tileY === 29 && (tileX === 30 || tileX === 31)) {
 			this.scene.start("village", { x: 88, y: 71 })
 		}
 	}
