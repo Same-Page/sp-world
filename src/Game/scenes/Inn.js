@@ -18,7 +18,6 @@ export default class InnScene extends BaseScene {
 		// window.leave.bind(this)
 
 		super.create()
-		this.add.text(200, 100, "hi there")
 		const map = this.make.tilemap({ key: "inn" })
 		this.map = map
 		// 1st param is tileset name in map.json, 2nd is image key in cache
