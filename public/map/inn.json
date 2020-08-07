@@ -759,6 +759,11 @@
                          "name":"c",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"npc",
+                         "type":"bool",
+                         "value":true
                         }]
                 }, 
                 {

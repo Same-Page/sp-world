@@ -13,6 +13,12 @@ export default class VillageScene extends Phaser.Scene {
 		return res
 	}
 
+	// setupNPC() {
+	//     const map = this.map
+	//     // TODO: just hard code now
+	//     this.npcList = []
+	// }
+
 	setupEasyStar() {
 		const map = this.map
 		const easyStar = new EasyStar.js()
@@ -125,9 +131,18 @@ export default class VillageScene extends Phaser.Scene {
 			const startX = this.p2t(user.x)
 			const startY = this.p2t(user.y)
 			const targetX = this.p2t(pointer.worldX)
-			const targetY = this.p2t(pointer.worldY)
+			let targetY = this.p2t(pointer.worldY)
 			if (this.isOutOfBound(targetX, targetY)) {
 				return
+			}
+			let talkToNPC = false
+			if (targetX === 6 && targetY === 43) {
+				targetY = 44
+				talkToNPC = true
+			}
+
+			if (talkToNPC && targetY === startY && targetX === startX) {
+				alert()
 			}
 
 			// console.log(startX, startY, targetX, targetY)
@@ -172,7 +187,14 @@ export default class VillageScene extends Phaser.Scene {
 						tweens: tweens,
 						onUpdate: (t) => {
 							this.checkPos()
-							// console.log(a, b, c)
+							// console.log(222)
+						},
+						onComplete: (t) => {
+							// console.log(33)
+
+							if (talkToNPC) {
+								alert()
+							}
 						},
 					})
 				}
@@ -203,9 +225,12 @@ export default class VillageScene extends Phaser.Scene {
 			return
 		}
 		// console.log(this.map, tileY, tileX)
-		const collide = this.map.collisionArray[tileY][tileX]
+		let collide = this.map.collisionArray[tileY][tileX]
 		const x = tileX * this.map.tileWidth
 		const y = tileY * this.map.tileWidth
+		if (tileX === 6 && tileY === 43) {
+			collide = false
+		}
 		if (collide) {
 			this.redSquare.x = x
 			this.redSquare.y = y

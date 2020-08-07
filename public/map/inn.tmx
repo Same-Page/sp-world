@@ -363,6 +363,7 @@
   <tile id="440">
    <properties>
     <property name="c" type="bool" value="true"/>
+    <property name="npc" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="472">
