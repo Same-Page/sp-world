@@ -3,7 +3,7 @@ import BaseScene from "./Base"
 
 export default class InnScene extends BaseScene {
 	init(data) {
-		console.log("inn init", data)
+		// console.log("inn init", data)
 		this.initData = data || {}
 	}
 	preload() {
@@ -31,7 +31,9 @@ export default class InnScene extends BaseScene {
 				mapLayer.depth = 1
 			}
 		})
-		super.postCreate()
+
+		this.postCreate()
+		console.log(this)
 		if (this.initData.entrance === "yard") {
 			this.user.x = 30 * this.map.tileHeight
 			this.user.y = 28 * this.map.tileWidth
@@ -48,6 +50,19 @@ export default class InnScene extends BaseScene {
 		}
 		if (tileY === 29 && (tileX === 30 || tileX === 31)) {
 			this.scene.start("village", { x: 88, y: 71 })
+		}
+		const room = this.checkInRoom(this.user.x, this.user.y)
+		if (room) {
+			if (!this.user.room) {
+				console.log("enter", room)
+				window.setShowRoomInfo(true)
+			}
+			this.user.room = room
+		} else {
+			if (this.user.room) {
+				console.log("leave", this.user.room)
+				this.user.room = null
+			}
 		}
 	}
 	update() {

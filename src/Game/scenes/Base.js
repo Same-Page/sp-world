@@ -88,9 +88,66 @@ export default class VillageScene extends Phaser.Scene {
 		// this.scene.start("village")
 		return true
 	}
+
+	setupRooms() {
+		this.rooms = []
+		const map = this.map
+		map.objects.forEach((ol) => {
+			if (ol.name === "room") {
+				ol.objects.forEach((r) => {
+					r.points = [
+						[r.x, r.y],
+						[r.x + r.width, r.y],
+						[r.x + r.width, r.y + r.height],
+						[r.x, r.y + r.height],
+					]
+				})
+
+				this.rooms = ol.objects
+			}
+		})
+	}
+
+	checkInRoom(x, y) {
+		let res = null
+
+		this.rooms.forEach((r) => {
+			const inside = this.isInside([x, y], r.points)
+			if (inside) {
+				res = r
+				// console.log(222)
+			}
+		})
+		return res
+	}
+
+	isInside(point, vs) {
+		//  vertices
+		// ray-casting algorithm based on
+		// http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+		//   console.log(point, vs);
+
+		var x = point[0],
+			y = point[1]
+
+		var inside = false
+		for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+			var xi = vs[i][0],
+				yi = vs[i][1]
+			var xj = vs[j][0],
+				yj = vs[j][1]
+
+			var intersect =
+				yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
+			if (intersect) inside = !inside
+		}
+
+		return inside
+	}
+
 	postCreate() {
 		// after child class pass in map
-
+		this.setupRooms()
 		const user = this.add.rexCircleMaskImage(100, 200, "cat")
 		this.user = user
 		user.setInteractive({
