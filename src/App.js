@@ -5,6 +5,7 @@ import { Modal, Button } from "antd"
 
 import Game from "./Game"
 import Chat from "./Chat"
+import Room from "./Room"
 
 function App() {
 	const [showRoomInfo, setShowRoomInfo] = useState(false)
@@ -28,6 +29,7 @@ function App() {
 
 			<Game />
 			<Chat />
+			<Room />
 		</div>
 	)
 }

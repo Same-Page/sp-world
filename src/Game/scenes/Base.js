@@ -59,7 +59,7 @@ export default class BaseScene extends Phaser.Scene {
 		map.collisionArray = collisionArray
 		this.easyStar = easyStar
 		easyStar.enableDiagonals(true)
-
+		easyStar.disableCornerCutting(true)
 		return easyStar
 	}
 
@@ -94,6 +94,13 @@ export default class BaseScene extends Phaser.Scene {
 		const map = this.map
 		map.objects.forEach((ol) => {
 			if (ol.name === "room") {
+				var roomGraphics = this.add.graphics()
+				const wallHeight = map.tileHeight * 2
+				roomGraphics.fillStyle(
+					// Phaser.Display.Color.GetColor(255, 255, 255),
+					Phaser.Display.Color.GetColor(0, 0, 0),
+					0.75
+				) // color: 0xRRGGBB
 				ol.objects.forEach((r) => {
 					r.points = [
 						[r.x, r.y],
@@ -101,6 +108,37 @@ export default class BaseScene extends Phaser.Scene {
 						[r.x + r.width, r.y + r.height],
 						[r.x, r.y + r.height],
 					]
+					var rect = new Phaser.Geom.Rectangle(
+						r.x,
+						r.y - wallHeight,
+						r.width,
+						wallHeight
+					)
+					roomGraphics.fillRectShape(rect)
+					const roomText = this.add.text(
+						r.x + r.width / 2,
+						r.y - wallHeight / 2,
+						"韩国密室大逃脱第三季第五期",
+						{
+							// color: "black",
+							// fontWight: 100,
+							// fontFamily:
+							// 	"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+							// fontFamily:
+							// 	'Georgia, "Goudy Bookletter 1911", Times, serif',
+						}
+					)
+					roomText.setWordWrapWidth(r.width - 10, true)
+					roomText.setOrigin(0.5, 0.5)
+					roomText.setFontSize(14)
+					roomText.setLineSpacing(5)
+					const resolution = 2
+
+					if (window.isMobile) {
+						roomText.setScale(1 / resolution)
+						roomText.setOrigin(0.5 * resolution, 0.5 * resolution)
+					}
+					roomText.setResolution(resolution)
 				})
 
 				this.rooms = ol.objects

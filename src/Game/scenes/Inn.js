@@ -23,7 +23,7 @@ export default class InnScene extends BaseScene {
 		// extruded tile, need to set margin and spacing
 		const innTileset = map.addTilesetImage("inn", "inn")
 		const tilesets = [innTileset]
-		console.log(map)
+		// console.log(map)
 		map.layers.forEach((l) => {
 			const mapLayer = map.createStaticLayer(l.name, tilesets)
 			if (l.name === "wall") {
@@ -32,7 +32,7 @@ export default class InnScene extends BaseScene {
 		})
 
 		this.postCreate()
-		console.log(this)
+		// console.log(this)
 		if (this.initData.entrance === "yard") {
 			this.user.x = 30 * this.map.tileHeight
 			this.user.y = 28 * this.map.tileWidth

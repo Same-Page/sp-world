@@ -23,9 +23,10 @@ function Game() {
 
 		const game = new Phaser.Game({
 			type: window.isMobile ? Phaser.CANVAS : Phaser.AUTO,
-			// type: Phaser.CANVAS,
+			// type: Phaser.WEBGL,
 			width: window.innerWidth,
 			height: window.innerHeight - 32,
+
 			// physics: {
 			// 	default: 'arcade',
 			// 	arcade: {
@@ -53,6 +54,10 @@ function Game() {
 		game.scene.add("inn", InnScene)
 		game.scene.start("inn")
 		window.game = game
+
+		const foo = document.getElementsByTagName("canvas")
+
+		// alert(foo[0].width)
 		window.addEventListener("resize", () => {
 			game.scale.resize(window.innerWidth, window.innerHeight)
 		})
