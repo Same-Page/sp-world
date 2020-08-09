@@ -25,7 +25,7 @@ function Game() {
 			type: window.isMobile ? Phaser.CANVAS : Phaser.AUTO,
 			// type: Phaser.CANVAS,
 			width: window.innerWidth,
-			height: window.innerHeight,
+			height: window.innerHeight - 32,
 			// physics: {
 			// 	default: 'arcade',
 			// 	arcade: {

@@ -1,4 +1,3 @@
-import Phaser from "phaser"
 import BaseScene from "./Base"
 
 export default class InnScene extends BaseScene {
@@ -43,6 +42,7 @@ export default class InnScene extends BaseScene {
 		}
 	}
 	checkPos() {
+		// move to base
 		const tileX = this.p2t(this.user.x)
 		const tileY = this.p2t(this.user.y)
 		if (tileY === 49) {

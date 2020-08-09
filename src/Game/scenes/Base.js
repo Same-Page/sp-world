@@ -1,7 +1,7 @@
 import Phaser from "phaser"
 import EasyStar from "easystarjs"
 
-export default class VillageScene extends Phaser.Scene {
+export default class BaseScene extends Phaser.Scene {
 	checkMapLayerProperty(layer, name, val) {
 		// console.log(layer.name)
 		let res = false
@@ -149,7 +149,9 @@ export default class VillageScene extends Phaser.Scene {
 		// after child class pass in map
 		this.setupRooms()
 		const user = this.add.rexCircleMaskImage(100, 200, "cat")
+		user.id = 123
 		this.user = user
+		window.user = user
 		user.setInteractive({
 			cursor: "pointer",
 		})
@@ -192,14 +194,19 @@ export default class VillageScene extends Phaser.Scene {
 			if (this.isOutOfBound(targetX, targetY)) {
 				return
 			}
-			let talkToNPC = false
+			let npc = null
 			if (targetX === 6 && targetY === 43) {
 				targetY = 44
-				talkToNPC = true
+				npc = {
+					id: "inn owner",
+					x: 6 * map.tileWidth,
+					y: 43 * map.tileHeight - 15,
+					lastWord: "欢迎光临麦当劳~！",
+				}
 			}
 
-			if (talkToNPC && targetY === startY && targetX === startX) {
-				alert()
+			if (npc && targetY === startY && targetX === startX) {
+				window.updateUserBubble(npc)
 			}
 
 			// console.log(startX, startY, targetX, targetY)
@@ -244,13 +251,16 @@ export default class VillageScene extends Phaser.Scene {
 						tweens: tweens,
 						onUpdate: (t) => {
 							this.checkPos()
+							// console.log("update user bubble", user, "=========")
+							window.updateUserBubble(user)
 							// console.log(222)
 						},
 						onComplete: (t) => {
 							// console.log(33)
-
-							if (talkToNPC) {
-								alert()
+							if (npc) {
+								// trigger npc's bubble
+								npc.lastWordTime = new Date().getTime()
+								window.updateUserBubble(npc)
 							}
 						},
 					})
@@ -260,6 +270,7 @@ export default class VillageScene extends Phaser.Scene {
 		})
 	}
 	create() {
+		window.scene = this
 		console.log("base create")
 
 		this.whiteSquare = this.add.sprite(0, 0, "whiteSquare")
