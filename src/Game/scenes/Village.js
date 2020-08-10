@@ -31,6 +31,8 @@ export default class VillageScene extends BaseScene {
 	}
 	create() {
 		super.create()
+		this.sceneName = "village"
+
 		const map = this.make.tilemap({ key: "map" })
 		this.map = map
 
@@ -93,21 +95,23 @@ export default class VillageScene extends BaseScene {
 		})
 
 		this.postCreate()
-		this.user.x = this.startPos.x * this.map.tileHeight
-		this.user.y = this.startPos.y * this.map.tileHeight
+		this.user.sprite.x = this.startPos.x * this.map.tileHeight
+		this.user.sprite.y = this.startPos.y * this.map.tileHeight
 	}
 
 	checkPos() {
-		const tileX = this.p2t(this.user.x)
-		const tileY = this.p2t(this.user.y)
+		const tileX = this.p2t(this.user.sprite.x)
+		const tileY = this.p2t(this.user.sprite.y)
 		// console.log(tileX, tileY)
 		if (tileX === 81 && tileY === 73) {
 			console.log("enter inn")
 			this.scene.start("inn", {})
+			this.leave()
 		}
 		if (tileX === 88 && tileY === 70) {
 			console.log("enter inn from yard")
 			this.scene.start("inn", { entrance: "yard" })
+			this.leave()
 		}
 	}
 

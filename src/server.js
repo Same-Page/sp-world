@@ -41,14 +41,24 @@ io.on("connection", (socket) => {
 	// 		},
 	// 	})
 	// 	.then((response) => {
+	const scene = socket.handshake.query.scene
+	console.log(scene)
+	socket.join(scene)
+
 	const id = new Date().getTime()
 	const user = { id, name: id, x: 6, y: 48 }
+	user.scene = scene
+	if (scene === "village") {
+		user.x = 81
+		user.y = 74
+	}
+
 	socket.user = user // socket.broadcast won't include self // io.sockets.emit would
-	socket.broadcast.emit("new user", user)
+	socket.to(scene).broadcast.emit("new user", user)
 	socket.emit("logged in", user)
 	socket.emit(
 		"all users",
-		getAllUsers().filter((u) => u.id !== id)
+		getAllUsers().filter((u) => u.id !== id && u.scene === scene)
 	)
 
 	socket.on("move", ({ x, y }) => {
@@ -56,30 +66,30 @@ io.on("connection", (socket) => {
 		socket.user.x = x
 		socket.user.y = y
 		// io.emit("move", socket.user)
-		socket.broadcast.emit("move", { id, x, y })
+		socket.to(scene).broadcast.emit("move", { id, x, y })
 	})
 	socket.on("message", function (data) {
-		socket.broadcast.emit("message", {
+		socket.to(scene).broadcast.emit("message", {
 			userId: socket.user.id,
 			message: data,
 		})
 	})
-	socket.on("one on one", function (data) {
-		const { userId, roomName } = data
-		const inviterName = socket.user.name
-		Object.keys(io.sockets.connected).forEach((socketID) => {
-			const s = io.sockets.connected[socketID]
-			if (s.user && s.user.id === userId) {
-				console.debug("invitation", roomName, inviterName)
-				s.emit("one on one", {
-					roomName,
-					name: inviterName,
-				})
-			}
-		})
-	})
+	// socket.on("one on one", function (data) {
+	// 	const { userId, roomName } = data
+	// 	const inviterName = socket.user.name
+	// 	Object.keys(io.sockets.connected).forEach((socketID) => {
+	// 		const s = io.sockets.connected[socketID]
+	// 		if (s.user && s.user.id === userId) {
+	// 			console.debug("invitation", roomName, inviterName)
+	// 			s.emit("one on one", {
+	// 				roomName,
+	// 				name: inviterName,
+	// 			})
+	// 		}
+	// 	})
+	// })
 	socket.on("disconnect", function () {
-		io.emit("remove user", socket.user.id)
+		socket.to(scene).broadcast.emit("remove user", socket.user.id)
 	})
 	// })
 	// .catch((error) => {

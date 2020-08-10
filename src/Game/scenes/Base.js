@@ -263,6 +263,10 @@ export default class BaseScene extends Phaser.Scene {
 			},
 		}
 	}
+	leave() {
+		this.socket.disconnect()
+		this.users = null
+	}
 	postCreate() {
 		// after child class pass in map
 
@@ -280,6 +284,7 @@ export default class BaseScene extends Phaser.Scene {
 		this.setupCamera(user.sprite)
 
 		this.setupInput(user)
+		this.setupSocket()
 	}
 	userMoveSocketListner({ id, x, y }) {
 		const users = this.users || {}
@@ -399,7 +404,10 @@ export default class BaseScene extends Phaser.Scene {
 
 	setupSocket() {
 		console.log("setup socket")
-		const socket = io.connect("ws://localhost:8081")
+		const socket = io.connect(
+			"ws://" + window.location.hostname + ":8081",
+			{ query: "scene=" + this.sceneName }
+		)
 		this.socket = socket
 		window.socket = socket
 
@@ -417,6 +425,7 @@ export default class BaseScene extends Phaser.Scene {
 
 	create() {
 		window.scene = this
+		this.sceneName = "base"
 		console.log("base create")
 
 		this.whiteSquare = this.add.sprite(0, 0, "whiteSquare")
@@ -428,9 +437,8 @@ export default class BaseScene extends Phaser.Scene {
 		this.redSquare.depth = 9999
 		this.redSquare.setAlpha(0.5)
 
-		this.input.setDefaultCursor("pointer")
+		// this.input.setDefaultCursor("pointer")
 		// const user = this.add.sprite(50, 50, "cat")
-		this.setupSocket()
 	}
 
 	update() {

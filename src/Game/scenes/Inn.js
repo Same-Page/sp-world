@@ -17,6 +17,8 @@ export default class InnScene extends BaseScene {
 		// window.leave.bind(this)
 
 		super.create()
+		this.sceneName = "inn"
+
 		const map = this.make.tilemap({ key: "inn" })
 		this.map = map
 		// 1st param is tileset name in map.json, 2nd is image key in cache
@@ -41,15 +43,19 @@ export default class InnScene extends BaseScene {
 			this.user.sprite.y = 48 * this.map.tileWidth
 		}
 	}
+
 	checkPos() {
 		// move to base
-		const tileX = this.p2t(this.user.x)
-		const tileY = this.p2t(this.user.y)
+		// console.log("checkPos")
+		const tileX = this.p2t(this.user.sprite.x)
+		const tileY = this.p2t(this.user.sprite.y)
 		if (tileY === 49) {
 			this.scene.start("village", { x: 81, y: 74 })
+			this.leave()
 		}
 		if (tileY === 29 && (tileX === 30 || tileX === 31)) {
 			this.scene.start("village", { x: 88, y: 71 })
+			this.leave()
 		}
 	}
 	update() {
