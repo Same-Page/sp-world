@@ -1,5 +1,6 @@
 import Phaser from "phaser"
 import EasyStar from "easystarjs"
+import io from "socket.io-client"
 
 export default class BaseScene extends Phaser.Scene {
 	checkMapLayerProperty(layer, name, val) {
@@ -12,12 +13,6 @@ export default class BaseScene extends Phaser.Scene {
 		})
 		return res
 	}
-
-	// setupNPC() {
-	//     const map = this.map
-	//     // TODO: just hard code now
-	//     this.npcList = []
-	// }
 
 	setupEasyStar() {
 		const map = this.map
@@ -99,7 +94,7 @@ export default class BaseScene extends Phaser.Scene {
 				roomGraphics.fillStyle(
 					// Phaser.Display.Color.GetColor(255, 255, 255),
 					Phaser.Display.Color.GetColor(0, 0, 0),
-					0.75
+					0.6
 				) // color: 0xRRGGBB
 				ol.objects.forEach((r) => {
 					r.points = [
@@ -146,17 +141,30 @@ export default class BaseScene extends Phaser.Scene {
 		})
 	}
 
-	checkInRoom(x, y) {
-		let res = null
-
+	checkInRoom() {
+		let room = null
+		const x = this.user.sprite.x
+		const y = this.user.sprite.y
 		this.rooms.forEach((r) => {
 			const inside = this.isInside([x, y], r.points)
 			if (inside) {
-				res = r
+				room = r
 				// console.log(222)
 			}
 		})
-		return res
+
+		if (room) {
+			if (!this.user.room) {
+				console.log("enter", room)
+				window.setShowRoomInfo(true)
+			}
+			this.user.room = room
+		} else {
+			if (this.user.room) {
+				console.log("leave", this.user.room)
+				this.user.room = null
+			}
+		}
 	}
 
 	isInside(point, vs) {
@@ -183,25 +191,11 @@ export default class BaseScene extends Phaser.Scene {
 		return inside
 	}
 
-	postCreate() {
-		// after child class pass in map
-		this.setupRooms()
-		const user = this.add.rexCircleMaskImage(100, 200, "cat")
-		user.id = 123
-		this.user = user
-		window.user = user
-		user.setInteractive({
-			cursor: "pointer",
-		})
-
-		user.setOrigin(0.1, 0)
-
-		user.displayWidth = 40
-		user.displayHeight = 32
+	setupCamera(userSprite) {
 		this.cameras.main.roundPixels = true
 
 		this.cameras.main.startFollow(
-			user,
+			userSprite,
 			false,
 			1,
 			1,
@@ -217,96 +211,210 @@ export default class BaseScene extends Phaser.Scene {
 			map.width * map.tileWidth,
 			map.height * map.tileHeight
 		)
+	}
 
-		const easyStar = this.setupEasyStar()
-		// when camera moves activePointer is not updated
+	setupInput(user) {
+		// Otherwise when camera moves activePointer is not updated
 		this.input.setPollAlways()
+		const userSprite = user.sprite
 		this.input.on("pointerdown", (pointer) => {
-			// console.log(pointer)
-			// user.x = pointer.worldX
-			// user.y = pointer.worldY
-			const startX = this.p2t(user.x)
-			const startY = this.p2t(user.y)
+			const startX = this.p2t(userSprite.x)
+			const startY = this.p2t(userSprite.y)
 			const targetX = this.p2t(pointer.worldX)
 			let targetY = this.p2t(pointer.worldY)
 			if (this.isOutOfBound(targetX, targetY)) {
 				return
 			}
-			let npc = null
-			if (targetX === 6 && targetY === 43) {
-				targetY = 44
-				npc = {
-					id: "inn owner",
-					x: 6 * map.tileWidth,
-					y: 43 * map.tileHeight - 15,
-					lastWord: "欢迎光临麦当劳~！",
+			let npc = this.checkNPC(targetX, targetY)
+			if (npc) {
+				targetY++
+
+				// already standing in front of NPC
+				if (targetY === startY && targetX === startX) {
+					npc.lastWordTime = new Date().getTime()
+
+					window.updateUserBubble(npc)
+					return
 				}
 			}
 
-			if (npc && targetY === startY && targetX === startX) {
-				window.updateUserBubble(npc)
-			}
+			this.userMove(user, targetX, targetY, npc)
+		})
+	}
+	checkNPC(tileX, tileY) {
+		const pos = tileY * this.map.width + tileX
+		return this.NPCs[pos]
+	}
+	setupNPC() {
+		const map = this.map
+		// TODO: just hard code now
+		const innGuardX = 6
+		const innGuardY = 43
+		const innGuardPos = innGuardY * this.map.width + innGuardX
+		this.NPCs = {
+			[innGuardPos]: {
+				id: "inn owner",
+				sprite: {
+					x: innGuardX * this.map.tileWidth,
+					y: innGuardY * this.map.tileHeight - 15,
+				},
 
-			// console.log(startX, startY, targetX, targetY)
-			easyStar.findPath(startX, startY, targetX, targetY, (path) => {
-				// destory previous timeline
-				if (user.timeline) {
-					user.timeline.destroy()
-				}
-				// console.log(path)
-				if (path && path.length) {
-					const tweens = []
-					for (var i = 0; i < path.length - 1; i++) {
-						var ex = path[i + 1].x
-						var ey = path[i + 1].y
-						// if walking diagonally, duration should be longer
-						// because distance is longer
-						let duration = 100
-						if (ex !== path[i].x && ey !== path[i].y) {
-							duration = 150
-						}
-						tweens.push({
-							targets: user,
-							x: {
-								value: ex * map.tileWidth,
-								duration: duration,
-							},
-							y: {
-								value: ey * map.tileHeight,
-								duration: duration,
-							},
-							// onUpdate: (tween, target) => {
-							// 	console.log(target.x, target.y)
-							// 	this.checkPos(
-							// 		this.p2t(target.x),
-							// 		this.p2t(target.y)
-							// 	)
-							// },
-						})
+				lastWord: "欢迎光临麦当劳~！",
+			},
+		}
+	}
+	postCreate() {
+		// after child class pass in map
+
+		const user = this.addUser({
+			id: new Date().getTime(),
+			x: 0,
+			y: 0,
+		})
+		this.user = user
+		window.user = user
+		this.setupRooms()
+		this.setupNPC()
+		this.setupEasyStar()
+
+		this.setupCamera(user.sprite)
+
+		this.setupInput(user)
+	}
+	userMoveSocketListner({ id, x, y }) {
+		const users = this.users || {}
+		const user = users[id]
+		if (user) {
+			console.log(user, x, y)
+			this.userMove(user, x, y)
+		} else {
+			console.error("user " + id + " not found, move failed")
+		}
+	}
+	userMove(user, targetX, targetY, npc) {
+		// NPC means this move is moving in front of NPC
+		// at the end of move should trigger NPC conversation
+		const sprite = user.sprite
+		const startX = this.p2t(sprite.x)
+		const startY = this.p2t(sprite.y)
+		const self = user == this.user
+		// console.log(user, this.user, self)
+		this.easyStar.findPath(startX, startY, targetX, targetY, (path) => {
+			// destory previous timeline
+			if (sprite.timeline) {
+				sprite.timeline.destroy()
+			}
+			// console.log(path)
+			if (path && path.length) {
+				const tweens = []
+				for (var i = 0; i < path.length - 1; i++) {
+					var ex = path[i + 1].x
+					var ey = path[i + 1].y
+					// if walking diagonally, duration should be longer
+					// because distance is longer
+					let duration = 100
+					if (ex !== path[i].x && ey !== path[i].y) {
+						duration = 150
 					}
-
-					user.timeline = this.tweens.timeline({
-						tweens: tweens,
-						onUpdate: (t) => {
-							this.checkPos()
-							// console.log("update user bubble", user, "=========")
-							window.updateUserBubble(user)
-							// console.log(222)
+					tweens.push({
+						targets: sprite,
+						x: {
+							value: ex * this.map.tileWidth,
+							duration: duration,
 						},
-						onComplete: (t) => {
-							// console.log(33)
-							if (npc) {
-								// trigger npc's bubble
-								npc.lastWordTime = new Date().getTime()
-								window.updateUserBubble(npc)
-							}
+						y: {
+							value: ey * this.map.tileHeight,
+							duration: duration,
 						},
 					})
 				}
-			})
-			easyStar.calculate()
+
+				sprite.timeline = this.tweens.timeline({
+					tweens: tweens,
+					onUpdate: (t) => {
+						this.checkPos()
+						window.updateUserBubble(user)
+					},
+					onComplete: (t) => {
+						if (npc) {
+							// trigger npc's bubble
+							npc.lastWordTime = new Date().getTime()
+							window.updateUserBubble(npc)
+						}
+						if (self) {
+							this.checkInRoom()
+						}
+					},
+				})
+				if (self) {
+					this.socket.emit("move", { x: targetX, y: targetY })
+				}
+			}
+		})
+		this.easyStar.calculate()
+	}
+	removeUser(userId) {
+		const user = this.users[userId]
+		delete this.users[userId]
+		user.sprite.destroy()
+	}
+
+	addUser(user) {
+		// add user to users dict
+		// add sprite to user and render user
+
+		// console.log("add user")
+		// console.log(user)
+		this.users = this.users || {}
+		if (this.users[user.id]) {
+			console.warn("user already added")
+			return user
+		}
+		this.users[user.id] = user
+
+		const userSprite = this.add.rexCircleMaskImage(100, 200, "cat")
+		userSprite.setOrigin(0.1, 0)
+
+		userSprite.displayWidth = 40
+		userSprite.displayHeight = 32
+
+		userSprite.x = user.x * this.map.tileWidth
+		userSprite.y = user.y * this.map.tileHeight
+
+		user.sprite = userSprite
+		return user
+	}
+	addAllUsers(users) {
+		console.log("addAllUsers", users)
+		users.forEach((u) => {
+			this.addUser(u)
 		})
 	}
+	message({ userId, message }) {
+		const user = this.users[userId]
+		user.lastWord = message
+		user.lastWordTime = new Date().getTime()
+		window.updateUserBubble(user)
+	}
+
+	setupSocket() {
+		console.log("setup socket")
+		const socket = io.connect("ws://localhost:8081")
+		this.socket = socket
+		window.socket = socket
+
+		socket.on("move", this.userMoveSocketListner.bind(this))
+		// self user is created on scene creation, socket login
+		// event should be used to retrieve latest user data
+		// socket.on("logged in", this.login.bind(this))
+		socket.on("new user", this.addUser.bind(this))
+		socket.on("remove user", this.removeUser.bind(this))
+		socket.on("all users", this.addAllUsers.bind(this))
+		socket.on("message", this.message.bind(this))
+		// console.log(this.addUser)
+		// console.log(this.addUser.bind(this))
+	}
+
 	create() {
 		window.scene = this
 		console.log("base create")
@@ -322,6 +430,7 @@ export default class BaseScene extends Phaser.Scene {
 
 		this.input.setDefaultCursor("pointer")
 		// const user = this.add.sprite(50, 50, "cat")
+		this.setupSocket()
 	}
 
 	update() {
@@ -334,7 +443,11 @@ export default class BaseScene extends Phaser.Scene {
 		let collide = this.map.collisionArray[tileY][tileX]
 		const x = tileX * this.map.tileWidth
 		const y = tileY * this.map.tileWidth
-		if (tileX === 6 && tileY === 43) {
+		// if (tileX === 6 && tileY === 43) {
+		// 	collide = false
+		// }
+		const hoverOnNPC = this.checkNPC(tileX, tileY)
+		if (hoverOnNPC) {
 			collide = false
 		}
 		if (collide) {

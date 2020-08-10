@@ -34,11 +34,11 @@ export default class InnScene extends BaseScene {
 		this.postCreate()
 		// console.log(this)
 		if (this.initData.entrance === "yard") {
-			this.user.x = 30 * this.map.tileHeight
-			this.user.y = 28 * this.map.tileWidth
+			this.user.sprite.x = 30 * this.map.tileHeight
+			this.user.sprite.y = 28 * this.map.tileWidth
 		} else {
-			this.user.x = 6 * this.map.tileHeight
-			this.user.y = 48 * this.map.tileWidth
+			this.user.sprite.x = 6 * this.map.tileHeight
+			this.user.sprite.y = 48 * this.map.tileWidth
 		}
 	}
 	checkPos() {
@@ -50,19 +50,6 @@ export default class InnScene extends BaseScene {
 		}
 		if (tileY === 29 && (tileX === 30 || tileX === 31)) {
 			this.scene.start("village", { x: 88, y: 71 })
-		}
-		const room = this.checkInRoom(this.user.x, this.user.y)
-		if (room) {
-			if (!this.user.room) {
-				console.log("enter", room)
-				window.setShowRoomInfo(true)
-			}
-			this.user.room = room
-		} else {
-			if (this.user.room) {
-				console.log("leave", this.user.room)
-				this.user.room = null
-			}
 		}
 	}
 	update() {

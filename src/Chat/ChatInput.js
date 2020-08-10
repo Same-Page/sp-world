@@ -18,7 +18,9 @@ function ChatInput() {
 					window.user.lastWord = input
 					window.user.lastWordTime = new Date().getTime()
 					window.updateUserBubble(window.user)
+
 					setInput("")
+					window.socket.emit("message", input)
 				}}
 			/>
 		</>

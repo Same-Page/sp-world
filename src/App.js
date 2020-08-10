@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "./App.css"
 import "antd/dist/antd.css"
 import { Modal, Button } from "antd"
@@ -9,6 +9,7 @@ import Room from "./Room"
 
 function App() {
 	const [showRoomInfo, setShowRoomInfo] = useState(false)
+
 	window.setShowRoomInfo = setShowRoomInfo
 	return (
 		<div className="App">

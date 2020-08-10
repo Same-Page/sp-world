@@ -22,7 +22,7 @@ function ChatBubble({ user }) {
 	// console.log(user.lastWord)
 	const left =
 		16 +
-		user.x -
+		user.sprite.x -
 		window.scene.cameras.main.scrollX -
 		(bubbleRef.current ? bubbleRef.current.clientWidth / 2 : 0)
 	// console.log(left)
@@ -30,7 +30,7 @@ function ChatBubble({ user }) {
 	// 	user.x,
 	// 	bubbleRef.current ? bubbleRef.current.clientWidth : false
 	// )
-	const top = user.y - window.scene.cameras.main.scrollY
+	const top = user.sprite.y - window.scene.cameras.main.scrollY
 	const bottom = window.innerHeight - top + 5
 	return (
 		<div

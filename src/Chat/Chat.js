@@ -11,6 +11,7 @@ function Chat() {
 			if (!user) {
 				console.error("no user")
 			}
+
 			// call this when message or user position is updated
 			setUsers((users) => {
 				// console.log(users, user)
