@@ -154,7 +154,7 @@ export default class BaseScene extends Phaser.Scene {
 		})
 
 		if (room) {
-			if (!this.user.room) {
+			if (this.user.room != room) {
 				console.log("enter", room)
 				window.setShowRoomInfo(true)
 			}
