@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
 	socket.join(scene)
 
 	const id = new Date().getTime()
-	const user = { id, name: id, x: 6, y: 48 }
+	const user = { id, name: id, x: 6, y: 50 }
 	user.scene = scene
 	if (scene === "village") {
 		user.x = 81

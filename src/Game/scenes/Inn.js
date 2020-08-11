@@ -37,10 +37,10 @@ export default class InnScene extends BaseScene {
 		// console.log(this)
 		if (this.initData.entrance === "yard") {
 			this.user.sprite.x = 30 * this.map.tileHeight
-			this.user.sprite.y = 28 * this.map.tileWidth
+			this.user.sprite.y = 30 * this.map.tileWidth
 		} else {
 			this.user.sprite.x = 6 * this.map.tileHeight
-			this.user.sprite.y = 48 * this.map.tileWidth
+			this.user.sprite.y = 50 * this.map.tileWidth
 		}
 	}
 
@@ -49,11 +49,11 @@ export default class InnScene extends BaseScene {
 		// console.log("checkPos")
 		const tileX = this.p2t(this.user.sprite.x)
 		const tileY = this.p2t(this.user.sprite.y)
-		if (tileY === 49) {
+		if (tileY === 51) {
 			this.scene.start("village", { x: 81, y: 74 })
 			this.leave()
 		}
-		if (tileY === 29 && (tileX === 30 || tileX === 31)) {
+		if (tileY === 31 && (tileX === 30 || tileX === 31)) {
 			this.scene.start("village", { x: 88, y: 71 })
 			this.leave()
 		}

@@ -76,9 +76,11 @@ export default class BaseScene extends Phaser.Scene {
 	}
 	isOutOfBound(x, y) {
 		// input is tile index
-		if (x < this.map.height && y < this.map.width && x >= 0 && y >= 0) {
+		// console.log(x, y, this.map.height)
+		if (x < this.map.width && y < this.map.height && x >= 0 && y >= 0) {
 			return false
 		}
+
 		console.warn("out of bound")
 		// this.scene.start("village")
 		return true
