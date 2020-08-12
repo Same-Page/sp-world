@@ -1,8 +1,8 @@
-.room-wall {
+/* .room-wall {
 	position: absolute;
 	background: #000000;
 	bottom: 416px;
-	/* background: white; */
+
 	left: 17px;
 	height: 63px;
 	color: white;
@@ -14,17 +14,17 @@
 }
 .room-wall-f {
 	position: absolute;
-	/* background: #000000cc; */
+
 	top: 655px;
 	background: #ffffffcc;
 	left: 17px;
 	font-weight: bold;
 	height: 173px;
-	/* color: white; */
+
 	width: 126px;
 	vertical-align: middle;
 	text-align: center;
 	padding-top: 25px;
 	pointer-events: none;
 	z-index: 99999999;
-}
+} */

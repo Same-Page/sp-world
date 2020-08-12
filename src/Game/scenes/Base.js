@@ -86,18 +86,32 @@ export default class BaseScene extends Phaser.Scene {
 		return true
 	}
 
+	setOccupiedRooms(rooms) {
+		this.occupiedRooms = rooms
+		this.rooms.forEach((r) => {
+			const occupiedRoom = rooms[r.name]
+			r.infoBg.visible = true
+
+			if (occupiedRoom) {
+				r.infoBg.visible = true
+				r.infoText.visible = true
+				r.infoText.setText(occupiedRoom.name)
+			} else {
+				r.infoBg.visible = false
+				r.infoText.visible = false
+			}
+		})
+	}
+	roomUpdateListener(room) {
+		this.occupiedRooms[room.id] = room
+		this.setOccupiedRooms(this.occupiedRooms)
+		window.showRoomModal({ id: room.id, data: room })
+	}
 	setupRooms() {
 		this.rooms = []
 		const map = this.map
 		map.objects.forEach((ol) => {
 			if (ol.name === "room") {
-				var roomGraphics = this.add.graphics()
-				const wallHeight = map.tileHeight * 2
-				roomGraphics.fillStyle(
-					// Phaser.Display.Color.GetColor(255, 255, 255),
-					Phaser.Display.Color.GetColor(0, 0, 0),
-					0.6
-				) // color: 0xRRGGBB
 				ol.objects.forEach((r) => {
 					r.points = [
 						[r.x, r.y],
@@ -105,17 +119,27 @@ export default class BaseScene extends Phaser.Scene {
 						[r.x + r.width, r.y + r.height],
 						[r.x, r.y + r.height],
 					]
-					var rect = new Phaser.Geom.Rectangle(
+					const wallHeight = map.tileHeight * 2
+
+					const rect = new Phaser.Geom.Rectangle(
 						r.x,
 						r.y - wallHeight,
 						r.width,
 						wallHeight
 					)
-					roomGraphics.fillRectShape(rect)
+					const roomGraphics = this.add.graphics()
+					roomGraphics.fillStyle(
+						// Phaser.Display.Color.GetColor(255, 255, 255),
+						Phaser.Display.Color.GetColor(0, 0, 0),
+						0.6
+					) // color: 0xRRGGBB
+
+					r.infoBg = roomGraphics.fillRectShape(rect)
+					r.infoBg.visible = false
 					const roomText = this.add.text(
 						r.x + r.width / 2,
 						r.y - wallHeight / 2,
-						"韩国密室大逃脱第三季第五期",
+						"无主题房间",
 						{
 							// color: "black",
 							// fontWight: 100,
@@ -129,6 +153,8 @@ export default class BaseScene extends Phaser.Scene {
 					roomText.setOrigin(0.5, 0.5)
 					roomText.setFontSize(14)
 					roomText.setLineSpacing(5)
+					roomText.visible = false
+					r.infoText = roomText
 					const resolution = 2
 
 					if (window.isMobile) {
@@ -158,7 +184,10 @@ export default class BaseScene extends Phaser.Scene {
 		if (room) {
 			if (this.user.room != room) {
 				console.log("enter", room)
-				window.setShowRoomInfo(true)
+				window.showRoomModal({
+					data: this.occupiedRooms[room.name],
+					id: room.name,
+				})
 			}
 			this.user.room = room
 		} else {
@@ -288,7 +317,7 @@ export default class BaseScene extends Phaser.Scene {
 		this.setupInput(user)
 		this.setupSocket()
 	}
-	userMoveSocketListner({ id, x, y }) {
+	userMoveSocketListener({ id, x, y }) {
 		const users = this.users || {}
 		const user = users[id]
 		if (user) {
@@ -413,7 +442,7 @@ export default class BaseScene extends Phaser.Scene {
 		this.socket = socket
 		window.socket = socket
 
-		socket.on("move", this.userMoveSocketListner.bind(this))
+		socket.on("move", this.userMoveSocketListener.bind(this))
 		// self user is created on scene creation, socket login
 		// event should be used to retrieve latest user data
 		// socket.on("logged in", this.login.bind(this))
@@ -421,6 +450,8 @@ export default class BaseScene extends Phaser.Scene {
 		socket.on("remove user", this.removeUser.bind(this))
 		socket.on("all users", this.addAllUsers.bind(this))
 		socket.on("message", this.message.bind(this))
+		socket.on("rooms", this.setOccupiedRooms.bind(this))
+		socket.on("room updated", this.roomUpdateListener.bind(this))
 		// console.log(this.addUser)
 		// console.log(this.addUser.bind(this))
 	}

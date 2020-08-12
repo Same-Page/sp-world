@@ -31,6 +31,13 @@ const randomInt = (low, high) => {
 	return Math.floor(Math.random() * (high - low) + low)
 }
 
+const rooms = {
+	"sm-1": {
+		id: "sm-1",
+		name: "半泽直树第二季",
+	},
+}
+
 io.on("connection", (socket) => {
 	//   console.log(socket.handshake.headers);
 	// socket.on("login", () => {
@@ -60,6 +67,7 @@ io.on("connection", (socket) => {
 		"all users",
 		getAllUsers().filter((u) => u.id !== id && u.scene === scene)
 	)
+	socket.emit("rooms", rooms)
 
 	socket.on("move", ({ x, y }) => {
 		// console.log("click to " + data.x + ", " + data.y)
@@ -73,6 +81,11 @@ io.on("connection", (socket) => {
 			userId: socket.user.id,
 			message: data,
 		})
+	})
+	socket.on("update room", (room) => {
+		rooms[room.id] = room
+		socket.to(scene).broadcast.emit("rooms", rooms)
+		socket.emit("room updated", room)
 	})
 	// socket.on("one on one", function (data) {
 	// 	const { userId, roomName } = data
