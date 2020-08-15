@@ -2,9 +2,6 @@ import "./Room.css"
 import React, { useState, useEffect } from "react"
 
 import { Form, Input, Upload, message, Modal, Button } from "antd"
-
-import VideoRoomComponent from "../Video/VideoRoomComponent"
-
 const formItemLayout = {
 	labelCol: {
 		xs: {
@@ -56,7 +53,6 @@ function Room() {
 		<Modal
 			// mask={false}
 			// maskClosable={false}
-			width={roomData ? 720 : 500}
 			footer={null}
 			title={title}
 			visible={showRoomInfo}
@@ -65,7 +61,6 @@ function Room() {
 				setShowRoomInfo(false)
 			}}
 		>
-			{roomData && <VideoRoomComponent />}
 			{!roomData && (
 				<Form
 					// className="sp-form"
@@ -80,12 +75,9 @@ function Room() {
 					// }}
 					scrollToFirstError
 				>
-					<p>
-						看来你发现了一个还没有主题的房间呢！先来设置一下该房间的主题吧，比如一起看某部电视剧，某部电影，还是聊一聊某个具体话题呢？
-					</p>
 					<Form.Item
 						name="name"
-						label="房间名称（必填）"
+						label="名称"
 						hasFeedback
 						rules={[
 							{
@@ -98,7 +90,7 @@ function Room() {
 					</Form.Item>
 					<Form.Item
 						name="about"
-						label="房间介绍"
+						label="介绍"
 						hasFeedback
 						rules={[
 							{

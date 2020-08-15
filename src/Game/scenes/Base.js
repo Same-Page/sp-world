@@ -109,7 +109,6 @@ export default class BaseScene extends Phaser.Scene {
 	}
 	setupRooms() {
 		this.rooms = []
-		this.occupiedRooms = {}
 		const map = this.map
 		map.objects.forEach((ol) => {
 			if (ol.name === "room") {
