@@ -49,24 +49,23 @@ io.on("connection", (socket) => {
 	// 	})
 	// 	.then((response) => {
 	const scene = socket.handshake.query.scene
-	console.log(scene)
+	const id = socket.handshake.query.id
+	// console.log(scene)
 	socket.join(scene)
 
-	const id = new Date().getTime()
+	// const id = new Date().getTime()
 	const user = { id, name: id, x: 6, y: 50 }
-	user.scene = scene
+	socket.scene = scene
 	if (scene === "village") {
 		user.x = 81
 		user.y = 74
 	}
-
 	socket.user = user // socket.broadcast won't include self // io.sockets.emit would
 	socket.to(scene).broadcast.emit("new user", user)
 	socket.emit("logged in", user)
-	socket.emit(
-		"all users",
-		getAllUsers().filter((u) => u.id !== id && u.scene === scene)
-	)
+	const usersInScene = getUsersInRoom(scene)
+
+	socket.emit("all users", usersInScene)
 	socket.emit("rooms", rooms)
 
 	socket.on("move", ({ x, y }) => {
@@ -82,7 +81,32 @@ io.on("connection", (socket) => {
 			message: data,
 		})
 	})
+	socket.on("audio toggle", ({ on }) => {
+		socket.user.audio = on
+		if (socket.roomId) {
+			socket.to(socket.roomId).broadcast.emit("audio toggle", socket.user)
+		}
+	})
+	socket.on("left room", (roomId) => {
+		if (socket.roomId) {
+			socket.leave(socket.roomId)
+			socket.to(socket.roomId).broadcast.emit("left room", socket.user)
+			socket.roomId = null
+		} else {
+			console.error("cannot leave room, not in room", socket.user)
+		}
+	})
+
+	socket.on("enter room", (roomId) => {
+		socket.join(roomId)
+		socket.roomId = roomId
+		const usersInRoom = getUsersInRoom(roomId)
+		socket.emit("users in room", usersInRoom)
+		socket.to(roomId).broadcast.emit("enter room", socket.user)
+		// users already in the room will try to p2p connect with the new user
+	})
 	socket.on("update room", (room) => {
+		// todo: don't wipe user data
 		rooms[room.id] = room
 		socket.to(scene).broadcast.emit("rooms", rooms)
 		socket.emit("room updated", room)
@@ -103,6 +127,9 @@ io.on("connection", (socket) => {
 	// })
 	socket.on("disconnect", function () {
 		socket.to(scene).broadcast.emit("remove user", socket.user.id)
+		if (socket.roomId) {
+			socket.to(socket.roomId).broadcast.emit("left room", socket.user)
+		}
 	})
 	// })
 	// .catch((error) => {
@@ -125,3 +152,13 @@ io.on("connection", (socket) => {
 	// 	return isOnline
 	// }
 })
+
+const getUsersInRoom = (roomId) => {
+	const usersInRoom = Object.keys(
+		io.sockets.adapter.rooms[roomId].sockets
+	).map((sid) => {
+		const s = io.sockets.connected[sid]
+		return s.user
+	})
+	return usersInRoom
+}

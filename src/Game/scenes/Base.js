@@ -107,12 +107,22 @@ export default class BaseScene extends Phaser.Scene {
 		this.setOccupiedRooms(this.occupiedRooms)
 		window.showRoomModal({ id: room.id, data: room })
 	}
+	otherEnterRoomListner(user) {
+		console.log("other enters", user)
+		if (window.enterRoomListener) {
+			window.enterRoomListener(user)
+		} else {
+			console.error("enterRoomListener not defined")
+		}
+	}
 	setupRooms() {
 		this.rooms = []
+		this.occupiedRooms = {}
 		const map = this.map
 		map.objects.forEach((ol) => {
 			if (ol.name === "room") {
 				ol.objects.forEach((r) => {
+					r.id = r.name
 					r.points = [
 						[r.x, r.y],
 						[r.x + r.width, r.y],
@@ -182,18 +192,19 @@ export default class BaseScene extends Phaser.Scene {
 		})
 
 		if (room) {
-			if (this.user.room != room) {
-				console.log("enter", room)
+			if (this.user.roomId !== room.id) {
+				// console.log("enter", room)
 				window.showRoomModal({
-					data: this.occupiedRooms[room.name],
-					id: room.name,
+					data: this.occupiedRooms[room.id],
+					id: room.id,
 				})
+				this.socket.emit("enter room", room)
 			}
-			this.user.room = room
+			this.user.roomId = room.id
 		} else {
-			if (this.user.room) {
-				console.log("leave", this.user.room)
-				this.user.room = null
+			if (this.user.roomId) {
+				this.socket.emit("left room", { roomId: this.user.roomId })
+				this.user.roomId = null
 			}
 		}
 	}
@@ -300,12 +311,13 @@ export default class BaseScene extends Phaser.Scene {
 	}
 	postCreate() {
 		// after child class pass in map
-
+		const userId = "user-" + (new Date().getTime() % 1000)
 		const user = this.addUser({
-			id: new Date().getTime(),
+			id: userId,
 			x: 0,
 			y: 0,
 		})
+		user.name = userId
 		this.user = user
 		window.user = user
 		this.setupRooms()
@@ -315,7 +327,7 @@ export default class BaseScene extends Phaser.Scene {
 		this.setupCamera(user.sprite)
 
 		this.setupInput(user)
-		this.setupSocket()
+		this.setupSocket(user)
 	}
 	userMoveSocketListener({ id, x, y }) {
 		const users = this.users || {}
@@ -391,8 +403,10 @@ export default class BaseScene extends Phaser.Scene {
 	}
 	removeUser(userId) {
 		const user = this.users[userId]
-		delete this.users[userId]
-		user.sprite.destroy()
+		if (user) {
+			delete this.users[userId]
+			user.sprite.destroy()
+		}
 	}
 
 	addUser(user) {
@@ -433,11 +447,11 @@ export default class BaseScene extends Phaser.Scene {
 		window.updateUserBubble(user)
 	}
 
-	setupSocket() {
+	setupSocket(user) {
 		console.log("setup socket")
 		const socket = io.connect(
 			"ws://" + window.location.hostname + ":8081",
-			{ query: "scene=" + this.sceneName }
+			{ query: "scene=" + this.sceneName + "&id=" + user.id }
 		)
 		this.socket = socket
 		window.socket = socket
@@ -452,6 +466,28 @@ export default class BaseScene extends Phaser.Scene {
 		socket.on("message", this.message.bind(this))
 		socket.on("rooms", this.setOccupiedRooms.bind(this))
 		socket.on("room updated", this.roomUpdateListener.bind(this))
+		socket.on("enter room", this.otherEnterRoomListner.bind(this))
+		socket.on("left room", (u) => {
+			if (window.otherLeftRoomListener) {
+				window.otherLeftRoomListener(u)
+			} else {
+				console.error("otherLeftRoomListener not defined")
+			}
+		})
+		socket.on("users in room", (users) => {
+			if (window.userInRoomListener) {
+				window.userInRoomListener(users)
+			} else {
+				console.error("userInRoomListner not defined")
+			}
+		})
+		socket.on("audio toggle", (data) => {
+			if (window.otherUserAudioToggleListener) {
+				window.otherUserAudioToggleListener(data)
+			} else {
+				console.error("otherUserAudioToggleListener not defined")
+			}
+		})
 		// console.log(this.addUser)
 		// console.log(this.addUser.bind(this))
 	}
