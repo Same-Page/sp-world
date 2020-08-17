@@ -125,6 +125,18 @@ function Room() {
 								<Input />
 							</Form.Item>
 							<Form.Item
+								name="url"
+								label="网址"
+								hasFeedback
+								rules={[
+									{
+										message: "请填写网址",
+									},
+								]}
+							>
+								<Input />
+							</Form.Item>
+							<Form.Item
 							//  {...buttonItemLayout}
 							>
 								<Button

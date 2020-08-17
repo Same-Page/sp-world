@@ -198,7 +198,7 @@ export default class BaseScene extends Phaser.Scene {
 					data: this.occupiedRooms[room.id],
 					id: room.id,
 				})
-				this.socket.emit("enter room", room)
+				this.socket.emit("enter room", room.id)
 			}
 			this.user.roomId = room.id
 		} else {
