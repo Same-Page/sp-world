@@ -4,6 +4,10 @@ var server = require("http").Server(app)
 var io = require("socket.io").listen(server)
 var fs = require("fs")
 const axios = require("axios")
+const path = require("path")
+// app.use(express.static(path.join(__dirname, "../build")))
+
+app.use(express.static(path.join(__dirname, "../build")))
 
 server.lastPlayderID = 0
 
