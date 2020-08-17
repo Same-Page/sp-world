@@ -420,8 +420,11 @@ export default class BaseScene extends Phaser.Scene {
 			"user-avatar-" + user.id
 		)
 		userSprite.setOrigin(0.1, 0)
-
 		userSprite.displayWidth = 40
+
+		// userSprite.setOrigin(0, 0)
+		// userSprite.displayWidth = 32
+
 		userSprite.displayHeight = 32
 
 		userSprite.x = user.x * this.map.tileWidth
