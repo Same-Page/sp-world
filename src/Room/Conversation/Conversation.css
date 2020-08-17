@@ -8,6 +8,8 @@
 	background-size: cover;
 	padding: 10px 10px 30px 10px;
 	scroll-behavior: smooth;
+	min-height: 200px;
+	max-height: 400px;
 }
 
 .min-chat-mode .sp-conversation {

@@ -467,6 +467,13 @@ export default class BaseScene extends Phaser.Scene {
 		socket.on("rooms", this.setOccupiedRooms.bind(this))
 		socket.on("room updated", this.roomUpdateListener.bind(this))
 		socket.on("enter room", this.otherEnterRoomListner.bind(this))
+		socket.on("room message", (data) => {
+			if (window.roomMessageListener) {
+				window.roomMessageListener(data)
+			} else {
+				console.error("roomMessageListener not defined")
+			}
+		})
 		socket.on("left room", (u) => {
 			if (window.otherLeftRoomListener) {
 				window.otherLeftRoomListener(u)

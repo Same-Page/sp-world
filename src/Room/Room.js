@@ -2,7 +2,7 @@ import "./Room.css"
 import React, { useState, useEffect } from "react"
 import RoomChat from "./RoomChat"
 
-import { Form, Input, Upload, message, Modal, Button } from "antd"
+import { Form, Input, message, Modal, Button } from "antd"
 const formItemLayout = {
 	labelCol: {
 		xs: {
@@ -26,6 +26,11 @@ const buttonItemLayout = {
 }
 
 function Room() {
+	useEffect(() => {
+		if (window.isMobile) {
+			message.warn("暂时不支持手机使用，请使用电脑")
+		}
+	}, [])
 	const [showRoomInfo, setShowRoomInfo] = useState(false)
 	const [roomInfo, setRoomInfo] = useState()
 	// {id: <room id>, data: <occupy info>}
@@ -65,7 +70,19 @@ function Room() {
 						setShowRoomInfo(false)
 					}}
 				>
-					{roomData && <RoomChat user={window.user} />}
+					{roomData && (
+						<>
+							<span>{roomData.about}</span>
+							{"    "}
+							<a target="_blank" href={roomData.url}>
+								{roomData.url}
+							</a>
+							<br />
+							<br />
+
+							<RoomChat user={window.user} />
+						</>
+					)}
 
 					{!roomData && (
 						<Form

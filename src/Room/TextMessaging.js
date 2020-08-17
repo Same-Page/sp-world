@@ -7,6 +7,25 @@ import Conversation from "./Conversation"
 function TextMessaging({ user }) {
 	const [messages, setMessages] = useState([])
 	const [input, setInput] = useState()
+	useEffect(() => {
+		window.roomMessageListener = ({ user, message }) => {
+			setMessages((msgs) => {
+				const time = new Date().getTime()
+
+				const m = {
+					content: { type: "text", value: message },
+					created_at: time,
+					id: time,
+					user,
+				}
+				return [...msgs, m]
+			})
+		}
+
+		return () => {
+			window.roomMessageListener = null
+		}
+	}, [])
 
 	return (
 		<>
@@ -32,6 +51,7 @@ function TextMessaging({ user }) {
 						const time = new Date().getTime()
 
 						const m = {
+							self: true,
 							content: { type: "text", value: input },
 							created_at: time,
 							id: time,
@@ -44,8 +64,8 @@ function TextMessaging({ user }) {
 						}
 						return [...msgs, m]
 					})
+					window.socket.emit("room message", input)
 					setInput("")
-					// window.socket.emit("message", input)
 				}}
 			/>
 		</>

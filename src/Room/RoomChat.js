@@ -10,6 +10,8 @@ function RoomChat({ user }) {
 	return (
 		<>
 			<Call user={user} />
+			<br />
+			<br />
 
 			<TextMessaging user={user} />
 		</>

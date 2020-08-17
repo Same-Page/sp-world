@@ -34,7 +34,9 @@ const randomInt = (low, high) => {
 const rooms = {
 	"sm-1": {
 		id: "sm-1",
-		name: "半泽直树第二季",
+		name: "韩综/大逃脱",
+		about: "第三季E03丧尸工厂, 胆小鬼勿入!!!",
+		url: "https://www.bilibili.com/video/BV1Ax411Z7Bo?p=29",
 	},
 }
 
@@ -78,6 +80,13 @@ io.on("connection", (socket) => {
 	socket.on("message", function (data) {
 		socket.to(scene).broadcast.emit("message", {
 			userId: socket.user.id,
+			message: data,
+		})
+	})
+	socket.on("room message", function (data) {
+		const roomId = socket.roomId
+		socket.to(roomId).broadcast.emit("room message", {
+			user: socket.user,
 			message: data,
 		})
 	})

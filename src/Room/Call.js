@@ -123,6 +123,7 @@ function Call({ user }) {
 			registerListenersOnStreamCall(call)
 			call.answer(myStream || fakeStream)
 		})
+
 		window.otherUserAudioToggleListener = (other) => {
 			setUsers((users) => {
 				users = users.filter((u) => {
@@ -171,6 +172,8 @@ function Call({ user }) {
 
 		return () => {
 			console.log("destroy peer")
+			window.otherUserAudioToggleListener = null
+			window.otherLeftRoomListener = null
 			window.enterRoomListener = null
 			window.userInRoomListner = null
 			peer.destroy()

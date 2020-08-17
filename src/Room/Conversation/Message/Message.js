@@ -2,7 +2,7 @@ import "./Message.css"
 
 import React from "react"
 import MessageBody from "./Body"
-
+import { Avatar } from "antd"
 // import AvatarWithPopover from "AvatarWithPopover"
 
 function ChatMessage({
@@ -34,23 +34,28 @@ function ChatMessage({
 			<span className="sp-message-username">{user.name}</span>
 		)
 
-		// const avatar = (
-		// 	<AvatarWithPopover
-		// 		user={user}
-		// 		popoverPlacement={self ? "left" : "right"}
-		// 	/>
-		// )
+		const avatar = (
+			// <AvatarWithPopover
+			// 	user={user}
+			// 	popoverPlacement={self ? "left" : "right"}
+			// />
+			<Avatar
+				src={user.avatarSrc}
+				// user={user}
+				// popoverPlacement={self ? "left" : "right"}
+			/>
+		)
 
 		userInfo = (
 			<div style={{ marginTop: 20 }}>
 				{self ? (
 					<>
 						{/* {username} */}
-						{/* {avatar} */}
+						{avatar}
 					</>
 				) : (
 					<>
-						{/* {avatar} */}
+						{avatar}
 						{username}
 					</>
 				)}
