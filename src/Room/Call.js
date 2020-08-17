@@ -199,7 +199,7 @@ function Call({ user }) {
 				<User
 					user={u}
 					key={u.id}
-					self={u.id === user.id}
+					self={String(u.id) === String(user.id)}
 					stream={streams[u.id]}
 					turnOnSelfAudio={turnOnSelfAudio}
 					turnOffSelfAudio={turnOffSelfAudio}

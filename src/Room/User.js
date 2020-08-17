@@ -14,7 +14,7 @@ function User({ user, self, stream, turnOnSelfAudio, turnOffSelfAudio }) {
 			<Avatar
 				// size="large"
 				title={user.id}
-				src="https://avatars2.githubusercontent.com/u/164476?s=88&v=4"
+				src={"/img/avatars/" + (user.id % 20) + ".png"}
 			/>
 			<br />
 			{/* {!self && <span style={{ fontSize: 11 }}>{user.id}</span>} */}

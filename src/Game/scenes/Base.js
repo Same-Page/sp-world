@@ -1,7 +1,6 @@
 import Phaser from "phaser"
 import EasyStar from "easystarjs"
 import io from "socket.io-client"
-
 export default class BaseScene extends Phaser.Scene {
 	checkMapLayerProperty(layer, name, val) {
 		// console.log(layer.name)
@@ -65,13 +64,15 @@ export default class BaseScene extends Phaser.Scene {
 	checkPos() {}
 
 	preload() {
+		const userId = new Date().getTime() % 1000
+		this.userId = userId
 		console.log("base preload")
 		this.load.setCORS(true)
 		this.load.image("whiteSquare", "img/white_square.png")
 		this.load.image("redSquare", "img/red_square.png")
 		this.load.image(
-			"cat",
-			"https://avatars2.githubusercontent.com/u/164476?s=88&v=4"
+			"user-avatar-" + userId,
+			"/img/avatars/" + (userId % 20) + ".png"
 		)
 	}
 	isOutOfBound(x, y) {
@@ -311,12 +312,15 @@ export default class BaseScene extends Phaser.Scene {
 	}
 	postCreate() {
 		// after child class pass in map
-		const userId = "user-" + (new Date().getTime() % 1000)
-		const user = this.addUser({
-			id: userId,
-			x: 0,
-			y: 0,
-		})
+		const userId = this.userId
+		const user = this.addUser(
+			{
+				id: userId,
+				x: 0,
+				y: 0,
+			},
+			true
+		)
 		user.name = userId
 		this.user = user
 		window.user = user
@@ -343,6 +347,7 @@ export default class BaseScene extends Phaser.Scene {
 		// NPC means this move is moving in front of NPC
 		// at the end of move should trigger NPC conversation
 		const sprite = user.sprite
+		if (!sprite) return
 		const startX = this.p2t(sprite.x)
 		const startY = this.p2t(sprite.y)
 		const self = user == this.user
@@ -408,8 +413,23 @@ export default class BaseScene extends Phaser.Scene {
 			user.sprite.destroy()
 		}
 	}
+	createSprite(user) {
+		const userSprite = this.add.rexCircleMaskImage(
+			100,
+			200,
+			"user-avatar-" + user.id
+		)
+		userSprite.setOrigin(0.1, 0)
 
-	addUser(user) {
+		userSprite.displayWidth = 40
+		userSprite.displayHeight = 32
+
+		userSprite.x = user.x * this.map.tileWidth
+		userSprite.y = user.y * this.map.tileHeight
+		user.sprite = userSprite
+		return userSprite
+	}
+	addUser(user, self) {
 		// add user to users dict
 		// add sprite to user and render user
 
@@ -422,16 +442,25 @@ export default class BaseScene extends Phaser.Scene {
 		}
 		this.users[user.id] = user
 
-		const userSprite = this.add.rexCircleMaskImage(100, 200, "cat")
-		userSprite.setOrigin(0.1, 0)
+		if (self) {
+			const sprite = this.createSprite(user)
+		} else {
+			const avatarId = user.id % 20
 
-		userSprite.displayWidth = 40
-		userSprite.displayHeight = 32
+			this.load.image(
+				"user-avatar-" + user.id,
+				"/img/avatars/" + avatarId + ".png"
+			)
+			this.load.start()
+			this.load.on(
+				"filecomplete",
+				() => {
+					this.createSprite(user)
+				},
+				this
+			)
+		}
 
-		userSprite.x = user.x * this.map.tileWidth
-		userSprite.y = user.y * this.map.tileHeight
-
-		user.sprite = userSprite
 		return user
 	}
 	addAllUsers(users) {

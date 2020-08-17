@@ -31,7 +31,7 @@ function ChatMessage({
 
 	if (user) {
 		const username = (
-			<span className="sp-message-username">{user.name}</span>
+			<span className="sp-message-username">user-{user.name}</span>
 		)
 
 		const avatar = (
@@ -40,7 +40,7 @@ function ChatMessage({
 			// 	popoverPlacement={self ? "left" : "right"}
 			// />
 			<Avatar
-				src={user.avatarSrc}
+				src={"/img/avatars/" + (user.id % 20) + ".png"}
 				// user={user}
 				// popoverPlacement={self ? "left" : "right"}
 			/>
