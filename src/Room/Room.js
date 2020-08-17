@@ -98,9 +98,12 @@ function Room() {
 							// }}
 							scrollToFirstError
 						>
+							<p>
+								看来你发现了一个还没有主题的房间呢！先来设置一下该房间的主题吧，比如一起看某部电视剧，某部电影，或者聊聊某个具体话题？
+							</p>
 							<Form.Item
 								name="name"
-								label="名称"
+								label="房间名称（必填）"
 								hasFeedback
 								rules={[
 									{
