@@ -481,7 +481,7 @@ export default class BaseScene extends Phaser.Scene {
 
 	setupSocket(user) {
 		console.log("setup socket")
-		let socketUrl = null
+		let socketUrl = "/"
 		// if (window.location.hostname.includes)
 		// "ws://" + window.location.hostname + ":8081"
 		const socket = io.connect(socketUrl, {
