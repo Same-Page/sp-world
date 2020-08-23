@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { message, Switch } from "antd"
-import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons"
+import { message } from "antd"
+// import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons"
 
 import Peer from "peerjs"
 
@@ -58,39 +58,18 @@ function Call({ user }) {
 	const [users, setUsers] = useState([user])
 	const [peer, setPeer] = useState()
 	const [streams, setStreams] = useState({})
-	// const [localStream, setLocalStream] = useState()
 
 	const registerListenersOnStreamCall = (call) => {
-		// calls[call.peer] = call
-		// const user = users.find((u) => {
-		// 	return u.id === call.peer
-		// })
-		// console.log(users, user)
-		// user.call = call
 		call.on("stream", (remoteStream) => {
 			console.log("received stream")
 			setStreams((streams) => {
 				return { ...streams, [call.peer]: remoteStream }
 			})
-			// streams[call.peer] = remoteStream
-			// call.stream = remoteStream
-			// setCalls((calls) => {
-			// 	return [...calls]
-			// })
 		})
 
 		call.on("close", () => {
 			console.log("call closed")
-			// setCalls((calls) => {
-			// 	const res = calls.filter((c) => {
-			// 		return c != call
-			// 	})
-			// 	return res
-			// })
 		})
-		// setCalls((calls) => {
-		// 	return [...calls, call]
-		// })
 	}
 	const turnOnSelfAudio = () => {
 		getMedia({ audio: true }).then((stream) => {
@@ -161,13 +140,6 @@ function Call({ user }) {
 
 		window.userInRoomListener = (users) => {
 			setUsers(users)
-			// users.forEach((u) => {
-			// 	if (u.id === user.id) return
-			// 	const call = peer.call(u.id, fakeStream)
-			// 	console.log("making calls to users already in room", call)
-
-			// 	registerListenersOnStreamCall(call)
-			// })
 		}
 
 		return () => {
@@ -186,13 +158,6 @@ function Call({ user }) {
 		}
 	}, [user])
 
-	// useEffect(() => {
-	// 	if (localStream) {
-	// 		return () => {
-	// 			localStream.getTracks()[0].stop()
-	// 		}
-	// 	}
-	// }, [localStream])
 	return (
 		<>
 			{users.map((u) => (
@@ -208,31 +173,5 @@ function Call({ user }) {
 		</>
 	)
 }
-
-/* <>
-{!c.stream && <span>未开麦</span>}
-{c.stream && (
-    <>
-        <span>已开麦</span>
-        <audio
-            autoPlay
-            // controls
-            key={Math.random()}
-            ref={(audio) => {
-                if (audio && c.stream) {
-                    audio.srcObject = c.stream
-                }
-            }}
-        ></audio>
-
-        {/* <Switch
-            checkedChildren=""
-            unCheckedChildren="屏蔽"
-            // checked={c.stream}
-            onChange={(on) => {
-                c.stream.getTracks()[0].enabled = on
-            }}
-        /> */
-// </>
 
 export default Call
