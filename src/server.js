@@ -41,6 +41,8 @@ const rooms = {
 		name: "韩综/大逃脱",
 		about: "第三季E03丧尸工厂, 胆小鬼勿入!!!",
 		url: "https://www.bilibili.com/video/BV1Ax411Z7Bo?p=29",
+		iframe:
+			"//player.bilibili.com/player.html?aid=56796302&bvid=BV1Ax411Z7Bo&cid=165014155&page=29",
 	},
 }
 

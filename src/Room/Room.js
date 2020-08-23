@@ -64,6 +64,7 @@ function Room() {
 					footer={null}
 					title={title}
 					visible={true}
+					width={roomData ? 720 : 480}
 					// visible={showRoomInfo}
 					//   onOk={this.handleOk}
 					onCancel={() => {
@@ -77,7 +78,20 @@ function Room() {
 							<a target="_blank" href={roomData.url}>
 								{roomData.url}
 							</a>
+
 							<br />
+							{roomData.iframe && (
+								<iframe
+									allowFullScreen
+									style={{
+										width: "100%",
+										height: "500px",
+										border: "none",
+										margin: "15px auto",
+									}}
+									src={roomData.iframe}
+								/>
+							)}
 							<br />
 
 							<RoomChat user={window.user} />
@@ -134,6 +148,18 @@ function Room() {
 								rules={[
 									{
 										message: "请填写网址",
+									},
+								]}
+							>
+								<Input />
+							</Form.Item>
+							<Form.Item
+								name="iframe"
+								label="内嵌iframe"
+								hasFeedback
+								rules={[
+									{
+										// message: "请填写网址",
 									},
 								]}
 							>
