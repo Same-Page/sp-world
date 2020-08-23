@@ -147,7 +147,7 @@ function Call({ user }) {
 			window.otherUserAudioToggleListener = null
 			window.otherLeftRoomListener = null
 			window.enterRoomListener = null
-			window.userInRoomListner = null
+			window.userInRoomListener = null
 			peer.destroy()
 			if (myStream) {
 				myStream.getTracks()[0].stop()

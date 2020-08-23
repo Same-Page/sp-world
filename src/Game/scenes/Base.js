@@ -550,7 +550,7 @@ export default class BaseScene extends Phaser.Scene {
 			if (window.userInRoomListener) {
 				window.userInRoomListener(users)
 			} else {
-				console.error("userInRoomListner not defined")
+				console.error("userInRoomListener not defined")
 			}
 		})
 		socket.on("audio toggle", (data) => {
