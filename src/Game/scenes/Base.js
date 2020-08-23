@@ -469,6 +469,9 @@ export default class BaseScene extends Phaser.Scene {
 		}
 		user.sprite = userSprite
 		this.setUserPos(user)
+		if (user == this.user) {
+			this.setupCamera(userSprite)
+		}
 
 		return userSprite
 	}

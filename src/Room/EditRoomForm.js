@@ -97,7 +97,7 @@ function EditRoomForm({ roomId, roomInfo }) {
 					},
 				]}
 			>
-				<Input placeholder="目标网站提供的内嵌iframe src的地址" />
+				<Input placeholder="目标网站提供的内嵌iframe src" />
 			</Form.Item>
 			<Form.Item
 			//  {...buttonItemLayout}
