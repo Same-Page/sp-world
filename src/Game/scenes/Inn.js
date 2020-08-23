@@ -4,21 +4,14 @@ export default class InnScene extends BaseScene {
 	init(data) {
 		// console.log("inn init", data)
 		this.initData = data || {}
+		this.sceneName = "inn"
 	}
-	preload() {
-		super.preload()
-
+	preloadExtra() {
 		this.load.image("inn", "tilesets/inn.png")
 		this.load.tilemapTiledJSON("inn", "map/inn.json")
 	}
 
-	create() {
-		// window.leave = this.leave
-		// window.leave.bind(this)
-
-		super.create()
-		this.sceneName = "inn"
-
+	createMap() {
 		const map = this.make.tilemap({ key: "inn" })
 		this.map = map
 		// 1st param is tileset name in map.json, 2nd is image key in cache
@@ -33,14 +26,13 @@ export default class InnScene extends BaseScene {
 			}
 		})
 
-		this.postCreate()
 		// console.log(this)
+	}
+	postCreate() {
 		if (this.initData.entrance === "yard") {
-			this.user.sprite.x = 30 * this.map.tileHeight
-			this.user.sprite.y = 30 * this.map.tileWidth
+			this.setUserPos(this.user, 30, 30)
 		} else {
-			this.user.sprite.x = 6 * this.map.tileHeight
-			this.user.sprite.y = 50 * this.map.tileWidth
+			this.setUserPos(this.user, 6, 50)
 		}
 	}
 
@@ -58,8 +50,8 @@ export default class InnScene extends BaseScene {
 			this.leave()
 		}
 	}
-	update() {
-		super.update()
-		// console.log("inn")
-	}
+	// update() {
+	// 	super.update()
+	// 	// console.log("inn")
+	// }
 }

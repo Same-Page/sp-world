@@ -2,6 +2,53 @@ import Phaser from "phaser"
 import EasyStar from "easystarjs"
 import io from "socket.io-client"
 export default class BaseScene extends Phaser.Scene {
+	preload() {
+		// const userId = new Date().getTime() % 1000
+		// this.userId = userId
+		// console.log("base preload")
+		this.load.setCORS(true)
+		this.load.image("whiteSquare", "img/white_square.png")
+		this.load.image("redSquare", "img/red_square.png")
+		this.load.image("questionMark", "/img/question_mark.png")
+		// this.load.image(
+		// 	"user-avatar-" + userId,
+		// 	"/img/avatars/" + (userId % 20) + ".png"
+		// )
+		this.preloadExtra()
+	}
+	preloadExtra() {}
+
+	createMap() {}
+
+	create() {
+		window.scene = this
+		this.sceneName = "base"
+
+		this.setupCursor()
+
+		this.createMap()
+		this.users = {}
+		const userId = new Date().getTime() % 1000
+
+		const user = this.addUser({
+			id: userId,
+			x: 0,
+			y: 0,
+		})
+		user.name = userId
+		this.user = user
+		window.user = user
+		this.setupRooms()
+		this.setupNPC()
+		this.setupEasyStar()
+
+		this.setupCamera(user.sprite)
+
+		this.setupInput(user)
+		this.setupSocket(user)
+		this.postCreate()
+	}
+
 	checkMapLayerProperty(layer, name, val) {
 		// console.log(layer.name)
 		let res = false
@@ -12,7 +59,16 @@ export default class BaseScene extends Phaser.Scene {
 		})
 		return res
 	}
-
+	setupCursor() {
+		this.whiteSquare = this.add.sprite(0, 0, "whiteSquare")
+		this.redSquare = this.add.sprite(0, 0, "redSquare")
+		this.whiteSquare.setOrigin(0, 0)
+		this.whiteSquare.setAlpha(0.5)
+		this.whiteSquare.depth = 9999
+		this.redSquare.setOrigin(0, 0)
+		this.redSquare.depth = 9999
+		this.redSquare.setAlpha(0.5)
+	}
 	setupEasyStar() {
 		const map = this.map
 		const easyStar = new EasyStar.js()
@@ -63,18 +119,6 @@ export default class BaseScene extends Phaser.Scene {
 	}
 	checkPos() {}
 
-	preload() {
-		const userId = new Date().getTime() % 1000
-		this.userId = userId
-		console.log("base preload")
-		this.load.setCORS(true)
-		this.load.image("whiteSquare", "img/white_square.png")
-		this.load.image("redSquare", "img/red_square.png")
-		this.load.image(
-			"user-avatar-" + userId,
-			"/img/avatars/" + (userId % 20) + ".png"
-		)
-	}
 	isOutOfBound(x, y) {
 		// input is tile index
 		// console.log(x, y, this.map.height)
@@ -310,29 +354,7 @@ export default class BaseScene extends Phaser.Scene {
 		this.socket.disconnect()
 		this.users = null
 	}
-	postCreate() {
-		// after child class pass in map
-		const userId = this.userId
-		const user = this.addUser(
-			{
-				id: userId,
-				x: 0,
-				y: 0,
-			},
-			true
-		)
-		user.name = userId
-		this.user = user
-		window.user = user
-		this.setupRooms()
-		this.setupNPC()
-		this.setupEasyStar()
 
-		this.setupCamera(user.sprite)
-
-		this.setupInput(user)
-		this.setupSocket(user)
-	}
 	userMoveSocketListener({ id, x, y }) {
 		const users = this.users || {}
 		const user = users[id]
@@ -413,12 +435,28 @@ export default class BaseScene extends Phaser.Scene {
 			user.sprite.destroy()
 		}
 	}
-	createSprite(user) {
-		const userSprite = this.add.rexCircleMaskImage(
-			100,
-			200,
-			"user-avatar-" + user.id
-		)
+	addUserSprite(user, tmp) {
+		let spriteName = "user-avatar-" + user.id
+		if (tmp) {
+			spriteName = "questionMark"
+
+			const avatarId = user.id % 20
+
+			this.load.image(
+				"user-avatar-" + user.id,
+				"/img/avatars/" + avatarId + ".png"
+			)
+			// TODO: this might cause race condition? e.g.
+			// callback may not be for the right user
+			this.load.once("complete", () => {
+				console.debug(user.id, "avatar loaded")
+				this.addUserSprite(user)
+				// user.sprite.destroy()
+			})
+			this.load.start()
+		}
+
+		const userSprite = this.add.rexCircleMaskImage(100, 200, spriteName)
 		userSprite.setOrigin(0.1, 0)
 		userSprite.displayWidth = 40
 
@@ -426,43 +464,32 @@ export default class BaseScene extends Phaser.Scene {
 		// userSprite.displayWidth = 32
 
 		userSprite.displayHeight = 32
-
-		userSprite.x = user.x * this.map.tileWidth
-		userSprite.y = user.y * this.map.tileHeight
+		if (user.sprite) {
+			user.sprite.destroy()
+		}
 		user.sprite = userSprite
+		this.setUserPos(user)
+
 		return userSprite
 	}
-	addUser(user, self) {
-		// add user to users dict
-		// add sprite to user and render user
+	setUserPos(user, x, y) {
+		if (x && y) {
+			user.x = x
+			user.y = y
+		}
+		// sprite position is always based on user position
 
-		// console.log("add user")
-		// console.log(user)
-		this.users = this.users || {}
+		user.sprite.x = user.x * this.map.tileWidth
+		user.sprite.y = user.y * this.map.tileHeight
+	}
+	addUser(user) {
 		if (this.users[user.id]) {
 			console.warn("user already added")
 			return user
 		}
 		this.users[user.id] = user
 
-		if (self) {
-			const sprite = this.createSprite(user)
-		} else {
-			const avatarId = user.id % 20
-
-			this.load.image(
-				"user-avatar-" + user.id,
-				"/img/avatars/" + avatarId + ".png"
-			)
-			this.load.start()
-			this.load.on(
-				"filecomplete",
-				() => {
-					this.createSprite(user)
-				},
-				this
-			)
-		}
+		this.addUserSprite(user, true)
 
 		return user
 	}
@@ -532,24 +559,6 @@ export default class BaseScene extends Phaser.Scene {
 		})
 		// console.log(this.addUser)
 		// console.log(this.addUser.bind(this))
-	}
-
-	create() {
-		window.scene = this
-		this.sceneName = "base"
-		console.log("base create")
-
-		this.whiteSquare = this.add.sprite(0, 0, "whiteSquare")
-		this.redSquare = this.add.sprite(0, 0, "redSquare")
-		this.whiteSquare.setOrigin(0, 0)
-		this.whiteSquare.setAlpha(0.5)
-		this.whiteSquare.depth = 9999
-		this.redSquare.setOrigin(0, 0)
-		this.redSquare.depth = 9999
-		this.redSquare.setAlpha(0.5)
-
-		// this.input.setDefaultCursor("pointer")
-		// const user = this.add.sprite(50, 50, "cat")
 	}
 
 	update() {
