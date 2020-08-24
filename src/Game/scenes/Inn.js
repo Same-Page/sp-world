@@ -1,9 +1,7 @@
 import BaseScene from "./Base"
 
 export default class InnScene extends BaseScene {
-	init(data) {
-		// console.log("inn init", data)
-		this.initData = data || {}
+	initExtra() {
 		this.sceneName = "inn"
 	}
 	preloadExtra() {
@@ -29,7 +27,7 @@ export default class InnScene extends BaseScene {
 		// console.log(this)
 	}
 	postCreate() {
-		if (this.initData.entrance === "yard") {
+		if (this.entrance === "yard") {
 			this.setUserPos(this.user, 30, 30)
 		} else {
 			this.setUserPos(this.user, 6, 50)

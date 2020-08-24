@@ -17,7 +17,7 @@ if (
 ) {
 	window.isMobile = true
 }
-function Game() {
+function Game({ user, socket }) {
 	useEffect(() => {
 		console.log("init game")
 
@@ -52,7 +52,7 @@ function Game() {
 
 		game.scene.add("village", VillageScene)
 		game.scene.add("inn", InnScene)
-		game.scene.start("inn")
+		game.scene.start("inn", { user, socket })
 		window.game = game
 
 		const foo = document.getElementsByTagName("canvas")

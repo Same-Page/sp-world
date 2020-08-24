@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import ChatInput from "./ChatInput"
+import ChatView from "./ChatView"
 
 import ChatBubble from "./ChatBubble"
 
@@ -28,9 +29,11 @@ function Chat() {
 
 	return (
 		<>
+			<ChatView />
 			{users.map((u) => {
 				return <ChatBubble user={u} key={u.id} />
 			})}
+
 			<ChatInput />
 		</>
 	)

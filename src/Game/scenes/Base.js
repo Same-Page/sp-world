@@ -1,7 +1,13 @@
 import Phaser from "phaser"
 import EasyStar from "easystarjs"
-import io from "socket.io-client"
 export default class BaseScene extends Phaser.Scene {
+	init({ user, socket }) {
+		this.user = user
+		this.socket = socket
+		this.sceneName = "base"
+		this.initExtra()
+	}
+	initExtra() {}
 	preload() {
 		// const userId = new Date().getTime() % 1000
 		// this.userId = userId
@@ -28,16 +34,8 @@ export default class BaseScene extends Phaser.Scene {
 
 		this.createMap()
 		this.users = {}
-		const userId = new Date().getTime() % 1000
-
-		const user = this.addUser({
-			id: userId,
-			x: 0,
-			y: 0,
-		})
-		user.name = userId
-		this.user = user
-		window.user = user
+		const user = this.user
+		this.addUser(user)
 		this.setupRooms()
 		this.setupNPC()
 		this.setupEasyStar()
@@ -519,15 +517,7 @@ export default class BaseScene extends Phaser.Scene {
 
 	setupSocket(user) {
 		console.log("setup socket")
-		let socketUrl = "/"
-		if (window.location.hostname.includes("localhost")) {
-			socketUrl = window.location.hostname + ":8081"
-		}
-		const socket = io.connect(socketUrl, {
-			query: "scene=" + this.sceneName + "&id=" + user.id,
-		})
-		this.socket = socket
-		window.socket = socket
+		const socket = this.socket
 
 		socket.on("move", this.userMoveSocketListener.bind(this))
 		// self user is created on scene creation, socket login
