@@ -8,6 +8,7 @@ function Chat() {
 
 	useEffect(() => {
 		window.updateUserBubble = (user) => {
+			// console.debug(user)
 			if (!user) {
 				console.error("no user")
 			}

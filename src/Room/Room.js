@@ -55,7 +55,7 @@ function Room() {
 									"users",
 									"chat",
 								]}
-								bordered={false}
+								// bordered={false}
 								// onChange={callback}
 							>
 								<Panel header="房间介绍" key="about">

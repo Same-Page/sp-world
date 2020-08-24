@@ -303,10 +303,14 @@ export default class BaseScene extends Phaser.Scene {
 	setupInput(user) {
 		// Otherwise when camera moves activePointer is not updated
 		this.input.setPollAlways()
-		const userSprite = user.sprite
 		this.input.on("pointerdown", (pointer) => {
-			const startX = this.p2t(userSprite.x)
-			const startY = this.p2t(userSprite.y)
+			// const userSprite = user.sprite
+
+			// const startX = this.p2t(userSprite.x)
+			// const startY = this.p2t(userSprite.y)
+			const startX = user.x
+			const startY = user.y
+
 			const targetX = this.p2t(pointer.worldX)
 			let targetY = this.p2t(pointer.worldY)
 			if (this.isOutOfBound(targetX, targetY)) {
@@ -314,12 +318,12 @@ export default class BaseScene extends Phaser.Scene {
 			}
 			let npc = this.checkNPC(targetX, targetY)
 			if (npc) {
+				console.debug("next to npc, talk to npc now")
 				targetY++
 
 				// already standing in front of NPC
 				if (targetY === startY && targetX === startX) {
 					npc.lastWordTime = new Date().getTime()
-
 					window.updateUserBubble(npc)
 					return
 				}
@@ -393,6 +397,7 @@ export default class BaseScene extends Phaser.Scene {
 					}
 					tweens.push({
 						targets: sprite,
+
 						x: {
 							value: ex * this.map.tileWidth,
 							duration: duration,
@@ -418,6 +423,8 @@ export default class BaseScene extends Phaser.Scene {
 						}
 						if (self) {
 							this.checkInRoom()
+							this.user.x = targetX
+							this.user.y = targetY
 						}
 					},
 				})
