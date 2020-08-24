@@ -412,7 +412,6 @@ export default class BaseScene extends Phaser.Scene {
 				sprite.timeline = this.tweens.timeline({
 					tweens: tweens,
 					onUpdate: (t) => {
-						this.checkPos()
 						window.updateUserBubble(user)
 					},
 					onComplete: (t) => {
@@ -422,9 +421,11 @@ export default class BaseScene extends Phaser.Scene {
 							window.updateUserBubble(npc)
 						}
 						if (self) {
-							this.checkInRoom()
 							this.user.x = targetX
 							this.user.y = targetY
+							this.checkInRoom()
+
+							this.checkPos()
 						}
 					},
 				})

@@ -4,6 +4,8 @@ import BaseScene from "./Base"
 export default class VillageScene extends BaseScene {
 	init(data) {
 		console.log("init village")
+		this.sceneName = "village"
+
 		if (data) {
 			this.startPos = {
 				x: data.x,
@@ -13,13 +15,8 @@ export default class VillageScene extends BaseScene {
 			this.startPos = { x: 56, y: 88 }
 		}
 	}
-	preload() {
-		super.preload()
-		// this.load.image(
-		// 	"cat",
-		// 	"https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/rectangle128x96.jpg"
-		// )
-		// this.load.image("grass", "tilesets/grass.png")
+
+	preloadExtra() {
 		this.load.image("base", "map/[Base]BaseChip_pipo_ex.png")
 		this.load.image("waterfall", "map/[A]WaterFall_pipo.png")
 		this.load.image("grass", "map/[A]Grass_pipo_ex.png")
@@ -29,10 +26,7 @@ export default class VillageScene extends BaseScene {
 
 		this.load.tilemapTiledJSON("map", "map/pipoya.json")
 	}
-	create() {
-		super.create()
-		this.sceneName = "village"
-
+	createMap() {
 		const map = this.make.tilemap({ key: "map" })
 		this.map = map
 
@@ -93,15 +87,21 @@ export default class VillageScene extends BaseScene {
 				mapLayer.depth = 1
 			}
 		})
-
-		this.postCreate()
-		this.user.sprite.x = this.startPos.x * this.map.tileHeight
-		this.user.sprite.y = this.startPos.y * this.map.tileHeight
 	}
+	postCreate() {
+		this.setUserPos(this.user, this.startPos.x, this.startPos.y)
 
+		// this.user.sprite.x = this.startPos.x * this.map.tileHeight
+		// this.user.sprite.y = this.startPos.y * this.map.tileHeight
+		// if (this.initData.entrance === "yard") {
+		// 	this.setUserPos(this.user, 30, 30)
+		// } else {
+		// 	this.setUserPos(this.user, 6, 50)
+		// }
+	}
 	checkPos() {
-		const tileX = this.p2t(this.user.sprite.x)
-		const tileY = this.p2t(this.user.sprite.y)
+		const tileX = this.user.x
+		const tileY = this.user.y
 		// console.log(tileX, tileY)
 		if (tileX === 81 && tileY === 73) {
 			console.log("enter inn")
@@ -115,8 +115,8 @@ export default class VillageScene extends BaseScene {
 		}
 	}
 
-	update() {
-		super.update()
-		// console.log("v")
-	}
+	// update() {
+	// 	super.update()
+	// 	// console.log("v")
+	// }
 }
