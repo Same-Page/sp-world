@@ -1,19 +1,33 @@
-import React, { useState, useEffect } from "react"
-// import { Input } from "antd"
+import React from "react"
+import "./ChatView.css"
 
-function ChatView({ socket }) {
-	const [messages, setMessages] = useState([])
-
-	useEffect(() => {}, [socket])
+function ChatView({ messages }) {
+	const height = window.innerHeight / 3
+	const top = window.innerHeight - height - 30
 
 	return (
-		<div>
+		<div
+			style={{
+				position: "absolute",
+				top,
+				height,
+				left: 10,
+				overflow: "auto",
+				color: "white",
+				fontWeight: "bold",
+			}}
+		>
 			{messages.map((m) => {
 				return (
-					<p key={m.id}>
-						<span>{m.user.name}</span>
-						{m.content.value}
-					</p>
+					<span key={m.id}>
+						<span className="chat-line">
+							{m.user.name}:{"  "}
+							{m.message}
+						</span>
+
+						<br />
+						<br />
+					</span>
 				)
 			})}
 		</div>

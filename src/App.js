@@ -15,7 +15,7 @@ function App() {
 	useEffect(() => {
 		// TODO: load user from localStorage
 		// if no user data, create a visitor user
-		const userId = new Date().getTime()
+		const userId = new Date().getTime() % 1000
 		const user = {
 			id: userId,
 			name: userId,

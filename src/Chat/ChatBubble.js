@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 
 function ChatBubble({ user }) {
 	const [show, setShow] = useState(true)
+	const [visible, setVisibility] = useState(false)
 	const [updateCounter, setUpdateCounter] = useState(0)
 	const bubbleRef = useRef()
 	useEffect(() => {
@@ -10,12 +11,19 @@ function ChatBubble({ user }) {
 		}
 
 		setShow(true)
+		setTimeout(() => {
+			setVisibility(true)
+			// setUpdateCounter((c) => {
+			// 	return c + 1
+			// })
+		}, 100)
 		// force rerender with updated left offset
 		setUpdateCounter((c) => c + 1)
 
 		user.bubbleTimeout = setTimeout(() => {
 			setShow(false)
-		}, 3000)
+			setVisibility(false)
+		}, 5000)
 		// console.log("use effect")
 	}, [user.lastWordTime])
 
@@ -33,25 +41,29 @@ function ChatBubble({ user }) {
 	const top = user.sprite.y - window.scene.cameras.main.scrollY
 	const bottom = window.innerHeight - top + 5
 	return (
-		<div
-			ref={bubbleRef}
-			style={{
-				position: "absolute",
-				bottom,
-				left,
-				background: "white",
-				padding: 7,
-				borderRadius: 5,
-				maxWidth: 200,
-				maxHeight: 200,
-				overflow: "auto",
-				visibility: show && user.lastWord ? "visible" : "hidden",
-				wordWrap: "break-word",
-				whiteSpace: "pre-wrap",
-			}}
-		>
-			{user.lastWord}
-		</div>
+		<>
+			{show && (
+				<div
+					ref={bubbleRef}
+					style={{
+						position: "absolute",
+						bottom,
+						left,
+						background: "white",
+						padding: 7,
+						borderRadius: 5,
+						maxWidth: 200,
+						maxHeight: 200,
+						overflow: "auto",
+						visibility: visible ? "visible" : "hidden",
+						wordWrap: "break-word",
+						whiteSpace: "pre-wrap",
+					}}
+				>
+					{user.lastWord}
+				</div>
+			)}
+		</>
 	)
 }
 

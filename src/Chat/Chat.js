@@ -4,8 +4,21 @@ import ChatView from "./ChatView"
 
 import ChatBubble from "./ChatBubble"
 
-function Chat() {
+function Chat({ user, socket }) {
 	const [users, setUsers] = useState([])
+	const [messages, setMessages] = useState([])
+	useEffect(() => {
+		const messageHandler = (data) => {
+			setMessages((msgs) => {
+				return [data, ...msgs]
+			})
+		}
+		socket.on("message", messageHandler)
+
+		return () => {
+			socket.off("message", messageHandler)
+		}
+	}, [socket])
 
 	useEffect(() => {
 		window.updateUserBubble = (user) => {
@@ -25,16 +38,16 @@ function Chat() {
 			})
 			// console.log("updateUserBubble")
 		}
-	})
+	}, [])
 
 	return (
 		<>
-			<ChatView />
+			<ChatView messages={messages} />
 			{users.map((u) => {
 				return <ChatBubble user={u} key={u.id} />
 			})}
 
-			<ChatInput />
+			<ChatInput setMessages={setMessages} />
 		</>
 	)
 }

@@ -508,14 +508,15 @@ export default class BaseScene extends Phaser.Scene {
 			this.addUser(u)
 		})
 	}
-	message({ userId, message }) {
-		const user = this.users[userId]
-		user.lastWord = message
+	message(data) {
+		const user = this.users[data.user.id]
+		user.lastWord = data.message
 		user.lastWordTime = new Date().getTime()
 		window.updateUserBubble(user)
 	}
 
 	setupSocket(user) {
+		// TODO: unregister listeners
 		console.log("setup socket")
 		const socket = this.socket
 

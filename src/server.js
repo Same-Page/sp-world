@@ -85,7 +85,7 @@ io.on("connection", (socket) => {
 	})
 	socket.on("message", function (data) {
 		socket.to(scene).broadcast.emit("message", {
-			userId: socket.user.id,
+			user: socket.user,
 			message: data,
 		})
 	})
