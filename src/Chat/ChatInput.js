@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Input } from "antd"
 
-function ChatInput() {
+function ChatInput({ setMessages }) {
 	const [input, setInput] = useState()
 
 	return (
@@ -21,6 +21,15 @@ function ChatInput() {
 
 					setInput("")
 					window.socket.emit("message", input)
+					setMessages((msgs) => {
+						return [
+							{
+								user: window.user,
+								message: input,
+							},
+							...msgs,
+						]
+					})
 				}}
 			/>
 		</>

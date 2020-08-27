@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from "react"
 
 function ChatBubble({ user }) {
-	const [show, setShow] = useState(true)
+	const [show, setShow] = useState(false)
 	const [visible, setVisibility] = useState(false)
 	const [updateCounter, setUpdateCounter] = useState(0)
 	const bubbleRef = useRef()
 	useEffect(() => {
+		if (!user.lastWord) {
+			return
+		}
 		if (user.bubbleTimeout) {
 			clearTimeout(user.bubbleTimeout)
 		}

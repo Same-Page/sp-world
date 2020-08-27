@@ -15,6 +15,7 @@ function ChatView({ messages }) {
 				overflow: "auto",
 				color: "white",
 				fontWeight: "bold",
+				pointerEvents: "none",
 			}}
 		>
 			{messages.map((m) => {
@@ -24,8 +25,6 @@ function ChatView({ messages }) {
 							{m.user.name}:{"  "}
 							{m.message}
 						</span>
-
-						<br />
 						<br />
 					</span>
 				)
