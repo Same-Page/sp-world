@@ -1,11 +1,15 @@
 import Phaser from "phaser"
 import EasyStar from "easystarjs"
 export default class BaseScene extends Phaser.Scene {
-	init({ user, socket }) {
+	init({ user, socket, entrance }) {
 		this.user = user
 		this.socket = socket
-		this.sceneName = "base"
+		this.entrance = entrance
+		// this.sceneName = "base"
+
 		this.initExtra()
+		window.scene = this
+		this.socket.emit("enter scene", this.sceneName)
 	}
 	initExtra() {}
 	preload() {
@@ -27,8 +31,7 @@ export default class BaseScene extends Phaser.Scene {
 	createMap() {}
 
 	create() {
-		window.scene = this
-		this.sceneName = "base"
+		// window.scene = this
 
 		this.setupCursor()
 
@@ -124,7 +127,7 @@ export default class BaseScene extends Phaser.Scene {
 			return false
 		}
 
-		console.warn("out of bound")
+		// console.warn("out of bound")
 		// this.scene.start("village")
 		return true
 	}
@@ -353,8 +356,10 @@ export default class BaseScene extends Phaser.Scene {
 		}
 	}
 	leave() {
-		this.socket.disconnect()
-		this.users = null
+		// this.socket.disconnect()
+		// this.users = null
+		// TODO: ?
+		this.socket.emit("leave scene", this.sceneName)
 	}
 
 	userMoveSocketListener({ id, x, y }) {
@@ -441,35 +446,15 @@ export default class BaseScene extends Phaser.Scene {
 			user.sprite.destroy()
 		}
 	}
-	addUserSprite(user, tmp) {
-		let spriteName = "user-avatar-" + user.id
-		if (tmp) {
-			spriteName = "questionMark"
 
-			const avatarId = user.id % 20
-
-			this.load.image(
-				"user-avatar-" + user.id,
-				"/img/avatars/" + avatarId + ".png"
-			)
-			// TODO: this might cause race condition? e.g.
-			// callback may not be for the right user
-			this.load.once("complete", () => {
-				console.debug(user.id, "avatar loaded")
-				this.addUserSprite(user)
-				// user.sprite.destroy()
-			})
-			this.load.start()
-		}
-
+	addSpriteToUser(user, spriteName) {
 		const userSprite = this.add.rexCircleMaskImage(100, 200, spriteName)
 		userSprite.setOrigin(0.1, 0)
 		userSprite.displayWidth = 40
-
 		// userSprite.setOrigin(0, 0)
 		// userSprite.displayWidth = 32
-
 		userSprite.displayHeight = 32
+
 		if (user.sprite) {
 			user.sprite.destroy()
 		}
@@ -478,9 +463,25 @@ export default class BaseScene extends Phaser.Scene {
 		if (user == this.user) {
 			this.setupCamera(userSprite)
 		}
-
-		return userSprite
 	}
+
+	addUserSprite(user) {
+		this.addSpriteToUser(user, "questionMark")
+
+		const avatarId = user.id % 20
+		let spriteName = "user-avatar-" + user.id
+
+		this.load.image(spriteName, "/img/avatars/" + avatarId + ".png")
+		// TODO: this might cause race condition? e.g.
+		// callback may not be for the right user
+		this.load.once("complete", () => {
+			console.debug(user.id, "avatar loaded")
+			this.addSpriteToUser(user, spriteName)
+			// user.sprite.destroy()
+		})
+		this.load.start()
+	}
+
 	setUserPos(user, x, y) {
 		if (x && y) {
 			user.x = x
@@ -498,7 +499,7 @@ export default class BaseScene extends Phaser.Scene {
 		}
 		this.users[user.id] = user
 
-		this.addUserSprite(user, true)
+		this.addUserSprite(user)
 
 		return user
 	}

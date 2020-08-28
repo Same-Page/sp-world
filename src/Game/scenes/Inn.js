@@ -35,16 +35,24 @@ export default class InnScene extends BaseScene {
 	}
 
 	checkPos() {
-		// move to base
+		// TODO: move to base, setup scene to scene door in map
 		// console.log("checkPos")
-		const tileX = this.p2t(this.user.sprite.x)
-		const tileY = this.p2t(this.user.sprite.y)
+		const tileX = this.user.x
+		const tileY = this.user.y
 		if (tileY === 51) {
-			this.scene.start("village", { x: 81, y: 74 })
+			this.scene.start("village", {
+				user: this.user,
+				socket: this.socket,
+			})
+			console.log(this)
 			this.leave()
 		}
 		if (tileY === 31 && (tileX === 30 || tileX === 31)) {
-			this.scene.start("village", { x: 88, y: 71 })
+			this.scene.start("village", {
+				user: this.user,
+				socket: this.socket,
+				entrance: "yard",
+			})
 			this.leave()
 		}
 	}

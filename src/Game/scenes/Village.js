@@ -2,18 +2,8 @@ import Phaser from "phaser"
 import BaseScene from "./Base"
 
 export default class VillageScene extends BaseScene {
-	init(data) {
-		console.log("init village")
+	initExtra() {
 		this.sceneName = "village"
-
-		if (data) {
-			this.startPos = {
-				x: data.x,
-				y: data.y,
-			}
-		} else {
-			this.startPos = { x: 56, y: 88 }
-		}
 	}
 
 	preloadExtra() {
@@ -89,15 +79,10 @@ export default class VillageScene extends BaseScene {
 		})
 	}
 	postCreate() {
-		this.setUserPos(this.user, this.startPos.x, this.startPos.y)
-
-		// this.user.sprite.x = this.startPos.x * this.map.tileHeight
-		// this.user.sprite.y = this.startPos.y * this.map.tileHeight
-		// if (this.initData.entrance === "yard") {
-		// 	this.setUserPos(this.user, 30, 30)
-		// } else {
-		// 	this.setUserPos(this.user, 6, 50)
-		// }
+		this.setUserPos(this.user, 81, 74)
+		if (this.entrance === "yard") {
+			this.setUserPos(this.user, 88, 71)
+		}
 	}
 	checkPos() {
 		const tileX = this.user.x
@@ -105,12 +90,16 @@ export default class VillageScene extends BaseScene {
 		// console.log(tileX, tileY)
 		if (tileX === 81 && tileY === 73) {
 			console.log("enter inn")
-			this.scene.start("inn", {})
+			this.scene.start("inn", { user: this.user, socket: this.socket })
 			this.leave()
 		}
 		if (tileX === 88 && tileY === 70) {
 			console.log("enter inn from yard")
-			this.scene.start("inn", { entrance: "yard" })
+			this.scene.start("inn", {
+				user: this.user,
+				socket: this.socket,
+				entrance: "yard",
+			})
 			this.leave()
 		}
 	}
