@@ -2,6 +2,8 @@ import Phaser from "phaser"
 import EasyStar from "easystarjs"
 export default class BaseScene extends Phaser.Scene {
 	init({ user, socket, entrance }) {
+		console.log("init")
+
 		this.user = user
 		this.socket = socket
 		this.entrance = entrance
@@ -9,7 +11,6 @@ export default class BaseScene extends Phaser.Scene {
 
 		this.initExtra()
 		window.scene = this
-		this.socket.emit("enter scene", this.sceneName)
 	}
 	initExtra() {}
 	preload() {
@@ -32,7 +33,7 @@ export default class BaseScene extends Phaser.Scene {
 
 	create() {
 		// window.scene = this
-
+		console.log("create")
 		this.setupCursor()
 
 		this.createMap()
@@ -46,8 +47,12 @@ export default class BaseScene extends Phaser.Scene {
 		this.setupCamera(user.sprite)
 
 		this.setupInput(user)
-		this.setupSocket(user)
+		this.registerSocketHandlers(user)
 		this.postCreate()
+		this.socket.emit("enter scene", {
+			sceneName: this.sceneName,
+			entrance: this.entrance,
+		})
 	}
 
 	checkMapLayerProperty(layer, name, val) {
@@ -360,6 +365,7 @@ export default class BaseScene extends Phaser.Scene {
 		// this.users = null
 		// TODO: ?
 		this.socket.emit("leave scene", this.sceneName)
+		this.unregisterSocketHandlers()
 	}
 
 	userMoveSocketListener({ id, x, y }) {
@@ -516,9 +522,24 @@ export default class BaseScene extends Phaser.Scene {
 		window.updateUserBubble(user)
 	}
 
-	setupSocket(user) {
-		// TODO: unregister listeners
-		console.log("setup socket")
+	unregisterSocketHandlers() {
+		console.log("unregister socket handlers")
+		const socket = this.socket
+		socket.off("move")
+		// self user is created on scene creation, socket login
+		// event should be used to retrieve latest user data
+		// socket.on("logged in", this.login.bind(this))
+		socket.off("new user")
+		socket.off("remove user")
+		socket.off("all users")
+		socket.off("message")
+		socket.off("rooms")
+		socket.off("room updated")
+		socket.off("enter room")
+	}
+
+	registerSocketHandlers(user) {
+		console.log("register socket handlers")
 		const socket = this.socket
 
 		socket.on("move", this.userMoveSocketListener.bind(this))
@@ -532,6 +553,7 @@ export default class BaseScene extends Phaser.Scene {
 		socket.on("rooms", this.setOccupiedRooms.bind(this))
 		socket.on("room updated", this.roomUpdateListener.bind(this))
 		socket.on("enter room", this.otherEnterRoomListner.bind(this))
+
 		socket.on("room message", (data) => {
 			if (window.roomMessageListener) {
 				window.roomMessageListener(data)

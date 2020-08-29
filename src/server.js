@@ -56,35 +56,62 @@ io.on("connection", (socket) => {
 	// 		},
 	// 	})
 	// 	.then((response) => {
-	const scene = socket.handshake.query.scene
+	// const scene = socket.handshake.query.scene
+	// TODO: change to check cookie
 	const id = socket.handshake.query.id
 	// console.log(scene)
-	socket.join(scene)
 
 	// const id = new Date().getTime()
 	const user = { id, name: id, x: 6, y: 50 }
-	socket.scene = scene
-	if (scene === "village") {
-		user.x = 81
-		user.y = 74
-	}
-	socket.user = user // socket.broadcast won't include self // io.sockets.emit would
-	socket.to(scene).broadcast.emit("new user", user)
-	socket.emit("logged in", user)
-	const usersInScene = getUsersInRoom(scene)
 
-	socket.emit("all users", usersInScene)
-	socket.emit("rooms", rooms)
+	socket.user = user // socket.broadcast won't include self // io.sockets.emit would
+	socket.emit("logged in", user)
+
+	socket.on("enter scene", ({ sceneName, entrance }) => {
+		socket.join(sceneName)
+		if (socket.scene) {
+			socket.leave(socket.scene)
+			socket
+				.to(socket.scene)
+				.broadcast.emit("remove user", socket.user.id)
+		}
+		socket.scene = sceneName
+		if (sceneName === "village") {
+			if (entrance === "yard") {
+				user.x = 88
+				user.y = 71
+			} else {
+				user.x = 81
+				user.y = 74
+			}
+		} else {
+			if (entrance === "yard") {
+				user.x = 30
+				user.y = 30
+			} else {
+				user.x = 6
+				user.y = 50
+			}
+		}
+		socket.to(sceneName).broadcast.emit("new user", user)
+
+		const usersInScene = getUsersInRoom(sceneName)
+
+		socket.emit("all users", usersInScene)
+		if (sceneName === "inn") {
+			socket.emit("rooms", rooms)
+		}
+	})
 
 	socket.on("move", ({ x, y }) => {
 		// console.log("click to " + data.x + ", " + data.y)
 		socket.user.x = x
 		socket.user.y = y
 		// io.emit("move", socket.user)
-		socket.to(scene).broadcast.emit("move", { id, x, y })
+		socket.to(socket.scene).broadcast.emit("move", { id, x, y })
 	})
 	socket.on("message", function (data) {
-		socket.to(scene).broadcast.emit("message", {
+		socket.to(socket.scene).broadcast.emit("message", {
 			user: socket.user,
 			message: data,
 		})
@@ -123,7 +150,7 @@ io.on("connection", (socket) => {
 	socket.on("update room", (room) => {
 		// todo: don't wipe user data
 		rooms[room.id] = room
-		socket.to(scene).broadcast.emit("rooms", rooms)
+		socket.to(socket.scene).broadcast.emit("rooms", rooms)
 		socket.emit("room updated", room)
 	})
 	// socket.on("one on one", function (data) {
@@ -141,7 +168,11 @@ io.on("connection", (socket) => {
 	// 	})
 	// })
 	socket.on("disconnect", function () {
-		socket.to(scene).broadcast.emit("remove user", socket.user.id)
+		if (socket.scene) {
+			socket
+				.to(socket.scene)
+				.broadcast.emit("remove user", socket.user.id)
+		}
 		if (socket.roomId) {
 			socket.to(socket.roomId).broadcast.emit("left room", socket.user)
 		}
