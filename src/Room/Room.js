@@ -7,8 +7,8 @@ import Users from "./Users"
 import EditRoomForm from "./EditRoomForm"
 const { Panel } = Collapse
 
-function Room() {
-	const user = window.user
+function Room({ user, socket }) {
+	// const user = window.user
 	useEffect(() => {
 		if (window.isMobile) {
 			message.warn("暂时不支持手机使用，请使用电脑")
@@ -89,17 +89,24 @@ function Room() {
 									</Panel>
 								)}
 								<Panel header="在线用户" key="users">
-									<Users user={user} />
+									<Users user={user} socket={socket} />
 								</Panel>
 								<Panel header="聊天" key="chat">
-									<TextMessaging user={user} />{" "}
+									<TextMessaging
+										user={user}
+										socket={socket}
+									/>
 								</Panel>
 							</Collapse>
 						</>
 					)}
 					{/* TODO: option to update room */}
 					{!roomInfo && (
-						<EditRoomForm roomInfo={roomInfo} roomId={roomId} />
+						<EditRoomForm
+							roomInfo={roomInfo}
+							roomId={roomId}
+							socket={socket}
+						/>
 					)}
 				</Modal>
 			)}

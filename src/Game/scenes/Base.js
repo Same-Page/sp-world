@@ -515,12 +515,12 @@ export default class BaseScene extends Phaser.Scene {
 			this.addUser(u)
 		})
 	}
-	message(data) {
-		const user = this.users[data.user.id]
-		user.lastWord = data.message
-		user.lastWordTime = new Date().getTime()
-		window.updateUserBubble(user)
-	}
+	// message(data) {
+	// 	const user = this.users[data.user.id]
+	// 	user.lastWord = data.message
+	// 	user.lastWordTime = new Date().getTime()
+	// 	window.updateUserBubble(user)
+	// }
 
 	unregisterSocketHandlers() {
 		console.log("unregister socket handlers")
@@ -532,7 +532,7 @@ export default class BaseScene extends Phaser.Scene {
 		socket.off("new user")
 		socket.off("remove user")
 		socket.off("all users")
-		socket.off("message")
+		// socket.off("message")
 		socket.off("rooms")
 		socket.off("room updated")
 		socket.off("enter room")
@@ -549,7 +549,7 @@ export default class BaseScene extends Phaser.Scene {
 		socket.on("new user", this.addUser.bind(this))
 		socket.on("remove user", this.removeUser.bind(this))
 		socket.on("all users", this.addAllUsers.bind(this))
-		socket.on("message", this.message.bind(this))
+		// socket.on("message", this.message.bind(this))
 		socket.on("rooms", this.setOccupiedRooms.bind(this))
 		socket.on("room updated", this.roomUpdateListener.bind(this))
 		socket.on("enter room", this.otherEnterRoomListner.bind(this))

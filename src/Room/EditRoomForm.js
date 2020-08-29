@@ -24,12 +24,12 @@ const formItemLayout = {
 // 	wrapperCol: { span: 14, offset: 4 },
 // }
 
-function EditRoomForm({ roomId, roomInfo }) {
+function EditRoomForm({ roomId, roomInfo, socket }) {
 	const [submitting, setSubmitting] = useState(false)
 	const submitForm = (data) => {
 		// console.log(data)
 		data.id = roomId
-		window.socket.emit("update room", data)
+		socket.emit("update room", data)
 		setSubmitting(true)
 	}
 	return (

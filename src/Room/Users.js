@@ -54,7 +54,7 @@ const createEmptyVideoTrack = ({ width, height }) => {
 
 const fakeStream = createMediaStreamFake()
 let myStream = null
-function Call({ user }) {
+function Call({ user, socket }) {
 	const [users, setUsers] = useState([user])
 	const [peer, setPeer] = useState()
 	const [streams, setStreams] = useState({})
@@ -75,7 +75,7 @@ function Call({ user }) {
 		getMedia({ audio: true }).then((stream) => {
 			console.log("got local stream")
 			myStream = stream
-			window.socket.emit("audio toggle", { on: true })
+			socket.emit("audio toggle", { on: true })
 			// setLocalStream(stream)
 			users.forEach((u) => {
 				if (u.id === user.id) return
@@ -90,7 +90,7 @@ function Call({ user }) {
 			myStream.getTracks()[0].stop()
 			myStream = null
 		}
-		window.socket.emit("audio toggle", { on: false })
+		socket.emit("audio toggle", { on: false })
 	}
 
 	useEffect(() => {
@@ -152,7 +152,7 @@ function Call({ user }) {
 			if (myStream) {
 				myStream.getTracks()[0].stop()
 			}
-			window.socket.emit("audio toggle", { on: false })
+			socket.emit("audio toggle", { on: false })
 
 			// setCalls([])
 		}

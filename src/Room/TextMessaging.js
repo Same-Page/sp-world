@@ -4,7 +4,7 @@ import { Input, message, Switch } from "antd"
 
 import Conversation from "./Conversation"
 
-function TextMessaging({ user }) {
+function TextMessaging({ user, socket }) {
 	const [messages, setMessages] = useState([])
 	const [input, setInput] = useState()
 	useEffect(() => {
@@ -64,7 +64,7 @@ function TextMessaging({ user }) {
 						}
 						return [...msgs, m]
 					})
-					window.socket.emit("room message", input)
+					socket.emit("room message", input)
 					setInput("")
 				}}
 			/>

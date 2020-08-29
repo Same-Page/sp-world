@@ -18,9 +18,9 @@ function ChatView({ messages }) {
 				pointerEvents: "none",
 			}}
 		>
-			{messages.map((m) => {
+			{messages.map((m, index) => {
 				return (
-					<span key={m.id}>
+					<span key={index}>
 						<span className="chat-line">
 							{m.user.name}:{"  "}
 							{m.message}

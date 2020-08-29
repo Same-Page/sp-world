@@ -47,7 +47,7 @@ function Chat({ user, socket }) {
 				return <ChatBubble user={u} key={u.id} />
 			})}
 
-			<ChatInput setMessages={setMessages} />
+			<ChatInput setMessages={setMessages} socket={socket} />
 		</>
 	)
 }
