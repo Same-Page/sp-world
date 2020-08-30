@@ -224,32 +224,35 @@ export default class BaseScene extends Phaser.Scene {
 		})
 	}
 
-	checkInRoom() {
+	checkInRoom(user) {
 		let room = null
-		const x = this.user.sprite.x
-		const y = this.user.sprite.y
+		const x = user.sprite.x
+		const y = user.sprite.y
 		this.rooms.forEach((r) => {
 			const inside = this.isInside([x, y], r.points)
 			if (inside) {
 				room = r
-				// console.log(222)
 			}
 		})
 
 		if (room) {
-			if (this.user.roomId !== room.id) {
+			if (user.roomId !== room.id) {
 				// console.log("enter", room)
-				window.showRoomModal({
-					data: this.occupiedRooms[room.id],
-					id: room.id,
-				})
-				this.socket.emit("enter room", room.id)
+				if (user.self) {
+					window.showRoomModal({
+						data: this.occupiedRooms[room.id],
+						id: room.id,
+					})
+					this.socket.emit("enter room", room.id)
+				}
 			}
-			this.user.roomId = room.id
+			user.roomId = room.id
 		} else {
-			if (this.user.roomId) {
-				this.socket.emit("left room", { roomId: this.user.roomId })
-				this.user.roomId = null
+			if (user.roomId) {
+				if (user.self) {
+					this.socket.emit("left room", { roomId: user.roomId })
+				}
+				user.roomId = null
 			}
 		}
 	}
@@ -362,6 +365,28 @@ export default class BaseScene extends Phaser.Scene {
 		this.unregisterSocketHandlers()
 	}
 
+	updateNearbyUsers() {
+		if (this.user.roomId) {
+			window.setNearbyUsers([])
+			return
+		}
+		const nearbyUsers = Object.values(this.users).filter((u) => {
+			if (!u.roomId && !u.self) {
+				const d = Phaser.Math.Distance.Between(
+					u.x,
+					u.y,
+					this.user.x,
+					this.user.y
+				)
+
+				// console.log(u.x, u.y, this.user.x, this.user.y, d)
+				return d <= 5
+			}
+			return false
+		})
+		window.setNearbyUsers(nearbyUsers)
+	}
+
 	userMoveSocketListener({ id, x, y }) {
 		const users = this.users || {}
 		const user = users[id]
@@ -423,13 +448,16 @@ export default class BaseScene extends Phaser.Scene {
 							npc.lastWordTime = new Date().getTime()
 							window.updateUserBubble(npc)
 						}
+						this.setUserPos(user, targetX, targetY)
+						this.checkInRoom(user)
+
 						if (self) {
-							this.user.x = targetX
-							this.user.y = targetY
-							this.checkInRoom()
+							// this.user.x = targetX
+							// this.user.y = targetY
 
 							this.checkPos()
 						}
+						this.updateNearbyUsers()
 					},
 				})
 				if (self) {
@@ -444,6 +472,7 @@ export default class BaseScene extends Phaser.Scene {
 		if (user) {
 			delete this.users[userId]
 			user.sprite.destroy()
+			this.updateNearbyUsers()
 		}
 	}
 
@@ -500,6 +529,7 @@ export default class BaseScene extends Phaser.Scene {
 		this.users[user.id] = user
 
 		this.addUserSprite(user)
+		this.updateNearbyUsers()
 
 		return user
 	}

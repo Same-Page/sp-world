@@ -19,6 +19,7 @@ function App() {
 		const user = {
 			id: userId,
 			name: userId,
+			self: true,
 		}
 		setUser(user)
 		window.user = user

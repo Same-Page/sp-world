@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react"
 
-function NearbyUsers({ user, socket }) {
+function NearbyUsers({ user }) {
+	// only users nearby
 	const [users, setUsers] = useState([user])
-
-	return <span style={{ position: "absolute" }}>"hi"</span>
+	window.setNearbyUsers = setUsers
+	return (
+		<span style={{ position: "absolute" }}>
+			{users.map((u) => (
+				<span key={u.id}>{u.id} </span>
+			))}
+		</span>
+	)
 }
 
 export default NearbyUsers

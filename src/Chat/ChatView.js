@@ -1,11 +1,11 @@
 import React from "react"
 import "./ChatView.css"
-import { message } from "antd"
+// import { message } from "antd"
 
 function ChatView({ messages }) {
 	const height = window.innerHeight / 3
 	const top = window.innerHeight - height - 30
-	console.log(messages)
+	// console.log(messages)
 	return (
 		<div
 			style={{
