@@ -103,7 +103,7 @@ function Call({ user, socket }) {
 			call.answer(myStream || fakeStream)
 		})
 
-		window.otherUserAudioToggleListener = (other) => {
+		const otherUserAudioToggleHandler = (other) => {
 			setUsers((users) => {
 				users = users.filter((u) => {
 					return u.id !== other.id
@@ -112,7 +112,8 @@ function Call({ user, socket }) {
 				return [...users, other]
 			})
 		}
-		window.otherLeftRoomListener = (other) => {
+
+		const otherLeftRoomHandler = (other) => {
 			setUsers((users) => {
 				const res = users.filter((u) => {
 					return u.id !== other.id
@@ -121,7 +122,7 @@ function Call({ user, socket }) {
 			})
 		}
 
-		window.enterRoomListener = (newUser) => {
+		const otherEnterRoomHandler = (newUser) => {
 			// when other user join room
 			// as an existing user, call this new user
 
@@ -138,25 +139,30 @@ function Call({ user, socket }) {
 			})
 		}
 
-		window.userInRoomListener = (users) => {
+		const userInRoomHandler = (users) => {
 			setUsers(users)
 		}
+		socket.on("left room", otherLeftRoomHandler)
+		socket.on("users in room", userInRoomHandler)
+		socket.on("audio toggle", otherUserAudioToggleHandler)
+		socket.on("enter room", otherEnterRoomHandler)
 
 		return () => {
 			console.log("destroy peer")
-			window.otherUserAudioToggleListener = null
-			window.otherLeftRoomListener = null
-			window.enterRoomListener = null
-			window.userInRoomListener = null
+
 			peer.destroy()
 			if (myStream) {
 				myStream.getTracks()[0].stop()
 			}
 			socket.emit("audio toggle", { on: false })
 
+			socket.off("left room", otherLeftRoomHandler)
+			socket.off("users in room", userInRoomHandler)
+			socket.off("audio toggle", otherUserAudioToggleHandler)
+			socket.off("enter room", otherEnterRoomHandler)
 			// setCalls([])
 		}
-	}, [user])
+	}, [user, socket])
 
 	return (
 		<>

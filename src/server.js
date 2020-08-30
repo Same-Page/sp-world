@@ -200,9 +200,11 @@ io.on("connection", (socket) => {
 })
 
 const getUsersInRoom = (roomId) => {
-	const usersInRoom = Object.keys(
-		io.sockets.adapter.rooms[roomId].sockets
-	).map((sid) => {
+	const room = io.sockets.adapter.rooms[roomId]
+	if (!room) {
+		return []
+	}
+	const usersInRoom = Object.keys(room.sockets).map((sid) => {
 		const s = io.sockets.connected[sid]
 		return s.user
 	})

@@ -8,7 +8,8 @@ function TextMessaging({ user, socket }) {
 	const [messages, setMessages] = useState([])
 	const [input, setInput] = useState()
 	useEffect(() => {
-		window.roomMessageListener = ({ user, message }) => {
+		const roomMessageHandler = ({ user, message }) => {
+			// console.log("messss")
 			setMessages((msgs) => {
 				const time = new Date().getTime()
 
@@ -21,9 +22,10 @@ function TextMessaging({ user, socket }) {
 				return [...msgs, m]
 			})
 		}
+		socket.on("room message", roomMessageHandler)
 
 		return () => {
-			window.roomMessageListener = null
+			socket.off("room message")
 		}
 	}, [])
 

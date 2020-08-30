@@ -17,6 +17,7 @@ if (
 ) {
 	window.isMobile = true
 }
+const MARGIN_BOTTOM = 32
 function Game({ user, socket }) {
 	useEffect(() => {
 		console.log("init game")
@@ -25,7 +26,7 @@ function Game({ user, socket }) {
 			type: window.isMobile ? Phaser.CANVAS : Phaser.AUTO,
 			// type: Phaser.WEBGL,
 			width: window.innerWidth,
-			height: window.innerHeight - 32,
+			height: window.innerHeight - MARGIN_BOTTOM,
 
 			// physics: {
 			// 	default: 'arcade',
@@ -59,7 +60,10 @@ function Game({ user, socket }) {
 
 		// alert(foo[0].width)
 		window.addEventListener("resize", () => {
-			game.scale.resize(window.innerWidth, window.innerHeight)
+			game.scale.resize(
+				window.innerWidth,
+				window.innerHeight - MARGIN_BOTTOM
+			)
 		})
 	}, [])
 	return <div id="game"></div>

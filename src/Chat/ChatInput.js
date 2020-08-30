@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Input } from "antd"
 
-function ChatInput({ setMessages, socket }) {
+function ChatInput({ user, setMessages, socket }) {
 	const [input, setInput] = useState()
 
 	return (
@@ -15,8 +15,8 @@ function ChatInput({ setMessages, socket }) {
 				value={input}
 				onPressEnter={() => {
 					// console.log(input)
-					window.user.lastWord = input
-					window.user.lastWordTime = new Date().getTime()
+					user.lastWord = input
+					user.lastWordTime = new Date().getTime()
 					window.updateUserBubble(window.user)
 
 					setInput("")
@@ -24,7 +24,7 @@ function ChatInput({ setMessages, socket }) {
 					setMessages((msgs) => {
 						return [
 							{
-								user: window.user,
+								user: user,
 								message: input,
 							},
 							...msgs,

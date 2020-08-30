@@ -158,14 +158,7 @@ export default class BaseScene extends Phaser.Scene {
 		this.setOccupiedRooms(this.occupiedRooms)
 		window.showRoomModal({ id: room.id, data: room })
 	}
-	otherEnterRoomListner(user) {
-		console.log("other enters", user)
-		if (window.enterRoomListener) {
-			window.enterRoomListener(user)
-		} else {
-			console.error("enterRoomListener not defined")
-		}
-	}
+
 	setupRooms() {
 		this.rooms = []
 		this.occupiedRooms = {}
@@ -535,7 +528,6 @@ export default class BaseScene extends Phaser.Scene {
 		// socket.off("message")
 		socket.off("rooms")
 		socket.off("room updated")
-		socket.off("enter room")
 	}
 
 	registerSocketHandlers(user) {
@@ -552,38 +544,6 @@ export default class BaseScene extends Phaser.Scene {
 		// socket.on("message", this.message.bind(this))
 		socket.on("rooms", this.setOccupiedRooms.bind(this))
 		socket.on("room updated", this.roomUpdateListener.bind(this))
-		socket.on("enter room", this.otherEnterRoomListner.bind(this))
-
-		socket.on("room message", (data) => {
-			if (window.roomMessageListener) {
-				window.roomMessageListener(data)
-			} else {
-				console.error("roomMessageListener not defined")
-			}
-		})
-		socket.on("left room", (u) => {
-			if (window.otherLeftRoomListener) {
-				window.otherLeftRoomListener(u)
-			} else {
-				console.error("otherLeftRoomListener not defined")
-			}
-		})
-		socket.on("users in room", (users) => {
-			if (window.userInRoomListener) {
-				window.userInRoomListener(users)
-			} else {
-				console.error("userInRoomListener not defined")
-			}
-		})
-		socket.on("audio toggle", (data) => {
-			if (window.otherUserAudioToggleListener) {
-				window.otherUserAudioToggleListener(data)
-			} else {
-				console.error("otherUserAudioToggleListener not defined")
-			}
-		})
-		// console.log(this.addUser)
-		// console.log(this.addUser.bind(this))
 	}
 
 	update() {
