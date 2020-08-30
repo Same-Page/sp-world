@@ -1,7 +1,8 @@
 .chat-line {
-	background: #00000036;
+	background: #00000052;
 	display: inline-block;
 	margin: 5px;
 	padding: 5px;
+	/* color: black; */
 	/* margin-bottom: 0px; */
 }
