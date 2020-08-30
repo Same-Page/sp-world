@@ -38,6 +38,7 @@ export default class BaseScene extends Phaser.Scene {
 
 		this.createMap()
 		this.users = {}
+		window.users = this.users
 		const user = this.user
 		this.addUser(user)
 		this.setupRooms()
@@ -365,7 +366,7 @@ export default class BaseScene extends Phaser.Scene {
 		const users = this.users || {}
 		const user = users[id]
 		if (user) {
-			console.log(user, x, y)
+			// console.log(user, x, y)
 			this.userMove(user, x, y)
 		} else {
 			console.error("user " + id + " not found, move failed")

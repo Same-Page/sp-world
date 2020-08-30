@@ -142,10 +142,10 @@ function Call({ user, socket }) {
 		const userInRoomHandler = (users) => {
 			setUsers(users)
 		}
+		socket.on("enter room", otherEnterRoomHandler)
 		socket.on("left room", otherLeftRoomHandler)
 		socket.on("users in room", userInRoomHandler)
 		socket.on("audio toggle", otherUserAudioToggleHandler)
-		socket.on("enter room", otherEnterRoomHandler)
 
 		return () => {
 			console.log("destroy peer")
@@ -156,10 +156,10 @@ function Call({ user, socket }) {
 			}
 			socket.emit("audio toggle", { on: false })
 
+			socket.off("enter room", otherEnterRoomHandler)
 			socket.off("left room", otherLeftRoomHandler)
 			socket.off("users in room", userInRoomHandler)
 			socket.off("audio toggle", otherUserAudioToggleHandler)
-			socket.off("enter room", otherEnterRoomHandler)
 			// setCalls([])
 		}
 	}, [user, socket])

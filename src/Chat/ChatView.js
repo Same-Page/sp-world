@@ -12,7 +12,7 @@ function ChatView({ messages }) {
 				top,
 				height,
 				left: 10,
-				overflow: "auto",
+				overflow: "hidden",
 				color: "white",
 				fontWeight: "bold",
 				pointerEvents: "none",
