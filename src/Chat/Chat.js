@@ -6,11 +6,21 @@ import ChatBubbles from "./ChatBubbles"
 
 function Chat({ user, socket }) {
 	const [messages, setMessages] = useState([])
+	const addMsg = (data) => {
+		setMessages((msgs) => {
+			return [data, ...msgs]
+		})
+		setTimeout(() => {
+			data.timeup = true
+
+			setMessages((msgs) => {
+				return [...msgs]
+			})
+		}, 20 * 1000)
+	}
 	useEffect(() => {
 		const messageHandler = (data) => {
-			setMessages((msgs) => {
-				return [data, ...msgs]
-			})
+			addMsg(data)
 
 			const user = window.users[data.user.id]
 			user.lastWord = data.message
@@ -28,10 +38,8 @@ function Chat({ user, socket }) {
 		<>
 			<NearbyUsers user={user} socket={socket} />
 			<ChatView messages={messages} />
-
 			<ChatBubbles />
-
-			<ChatInput user={user} setMessages={setMessages} socket={socket} />
+			<ChatInput user={user} addMsg={addMsg} socket={socket} />
 		</>
 	)
 }

@@ -1,10 +1,11 @@
 import React from "react"
 import "./ChatView.css"
+import { message } from "antd"
 
 function ChatView({ messages }) {
 	const height = window.innerHeight / 3
 	const top = window.innerHeight - height - 30
-
+	console.log(messages)
 	return (
 		<div
 			style={{
@@ -21,11 +22,15 @@ function ChatView({ messages }) {
 			{messages.map((m, index) => {
 				return (
 					<span key={index}>
-						<span className="chat-line">
-							{m.user.name}:{"  "}
-							{m.message}
-						</span>
-						<br />
+						{!m.timeup && (
+							<>
+								<span className="chat-line">
+									{m.user.name}:{"  "}
+									{m.message}
+								</span>
+								<br />
+							</>
+						)}
 					</span>
 				)
 			})}
