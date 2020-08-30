@@ -321,11 +321,12 @@ export default class BaseScene extends Phaser.Scene {
 			}
 			let npc = this.checkNPC(targetX, targetY)
 			if (npc) {
-				console.debug("next to npc, talk to npc now")
 				targetY++
 
 				// already standing in front of NPC
 				if (targetY === startY && targetX === startX) {
+					console.debug("next to npc, talk to npc now")
+
 					npc.lastWordTime = new Date().getTime()
 					window.updateUserBubble(npc)
 					return
@@ -443,11 +444,14 @@ export default class BaseScene extends Phaser.Scene {
 						window.updateUserBubble(user)
 					},
 					onComplete: (t) => {
+						// timeline was aborted if progress not 1
+						if (t.progress !== 1) return
 						if (npc) {
 							// trigger npc's bubble
 							npc.lastWordTime = new Date().getTime()
 							window.updateUserBubble(npc)
 						}
+
 						this.setUserPos(user, targetX, targetY)
 						this.checkInRoom(user)
 
