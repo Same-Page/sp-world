@@ -8,6 +8,11 @@ import Game from "./Game"
 import Chat from "./Chat"
 import Room from "./Room"
 
+const runningLocally = () => {
+	const hostname = window.location.hostname
+	return hostname.includes("localhost") || hostname.includes("192.168")
+}
+
 function App() {
 	const [socket, setSocket] = useState()
 
@@ -25,7 +30,7 @@ function App() {
 		window.user = user
 
 		let socketUrl = "/"
-		if (window.location.hostname.includes("localhost")) {
+		if (runningLocally()) {
 			socketUrl = window.location.hostname + ":8081"
 		}
 		const s = io.connect(socketUrl, {

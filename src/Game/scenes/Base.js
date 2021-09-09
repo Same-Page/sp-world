@@ -368,7 +368,9 @@ export default class BaseScene extends Phaser.Scene {
 
 	updateNearbyUsers() {
 		if (this.user.roomId) {
-			window.setNearbyUsers([])
+			if (window.setNearbyUsers) {
+				window.setNearbyUsers([])
+			}
 			return
 		}
 		const nearbyUsers = Object.values(this.users).filter((u) => {
@@ -379,13 +381,16 @@ export default class BaseScene extends Phaser.Scene {
 					this.user.x,
 					this.user.y
 				)
+				u.distance = d
 
 				// console.log(u.x, u.y, this.user.x, this.user.y, d)
 				return d <= 5
 			}
 			return false
 		})
-		window.setNearbyUsers(nearbyUsers)
+		if (window.setNearbyUsers) {
+			window.setNearbyUsers(nearbyUsers)
+		}
 	}
 
 	userMoveSocketListener({ id, x, y }) {

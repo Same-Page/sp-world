@@ -36,7 +36,7 @@ function Chat({ user, socket }) {
 
 	return (
 		<>
-			<NearbyUsers user={user} socket={socket} />
+			{/* <NearbyUsers user={user} socket={socket} /> */}
 			<ChatView messages={messages} />
 			<ChatBubbles />
 			<ChatInput user={user} addMsg={addMsg} socket={socket} />
